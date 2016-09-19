@@ -187,7 +187,7 @@ met2CF.Ameriflux <- function(in.path, in.prefix, outfolder, start_date, end_date
     # convert CO2 to mole_fraction_of_carbon_dioxide_in_air
     copyvals(nc1=nc1, var1='CO2',
              nc2=nc2, var2='mole_fraction_of_carbon_dioxide_in_air', units2='mole/mole', dim2=dim, 
-             conv=function(x) { x * 1e6 }, verbose=verbose)
+             conv=function(x) { x / 1e6 }, verbose=verbose)
     
     # convert TS1 to soil_temperature
     copyvals(nc1=nc1, var1='TS1',
@@ -202,7 +202,7 @@ met2CF.Ameriflux <- function(in.path, in.prefix, outfolder, start_date, end_date
     # convert VPD to water_vapor_saturation_deficit
     # HACK : conversion will make all values < 0 to be NA
     copyvals(nc1=nc1, var1='VPD',
-             nc2=nc2, var2='water_vapor_saturation_deficit', units2='mol m-2 s-1', dim2=dim, 
+             nc2=nc2, var2='water_vapor_saturation_deficit', units2='Pa', dim2=dim, 
              conv=function(x) { ifelse(x<0, NA, x*1000) }, verbose=verbose)
 
     # copy Rg to surface_downwelling_shortwave_flux_in_air

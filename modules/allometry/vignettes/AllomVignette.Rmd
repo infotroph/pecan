@@ -8,7 +8,7 @@ output: html_document
 ## install package from Github
 
 Only needs to be done the first time
-```{r}
+```{r, eval=FALSE}
 library(devtools)
 install_github("PecanProject/pecan",subdir="modules/allometry")
 ```
@@ -17,7 +17,7 @@ install_github("PecanProject/pecan",subdir="modules/allometry")
 ## Define species groups
 
 ```{r}
-library(PEcAn.allometries)
+library(PEcAn.allometry)
 
 ## define the Plant Functional Types you want to fit based on USDA acronyms and USFS species codes (spcd)
 ## can involve one or many species

@@ -15,6 +15,7 @@
 met2CF.NARR <- function(in.path, in.prefix, outfolder, start_date, end_date, overwrite=FALSE, verbose=FALSE, ...){
 
   require(ncdf4)
+  require(lubridate)
 
   dir.create(outfolder, showWarnings=FALSE, recursive=TRUE)
 
@@ -40,14 +41,14 @@ met2CF.NARR <- function(in.path, in.prefix, outfolder, start_date, end_date, ove
     # create array with results
     row <- y - start_year + 1
     results$file[row] <- newfile
-    results$host[row] <- fqdn()
+    results$host[row] <- PEcAn.utils::fqdn()
     results$startdate[row] <- paste0(y,"-01-01 00:00:00")
     results$enddate[row] <- paste0(y,"-12-31 23:59:59")
     results$mimetype[row] <- 'application/x-netcdf'
     results$formatname[row] <- 'CF (regional)'
 
     if (file.exists(newfile) && !overwrite) {
-      logger.debug("File '", newfile, "' already exists, skipping to next file.")
+      PEcAn.utils::logger.debug("File '", newfile, "' already exists, skipping to next file.")
       next
     }
 
@@ -59,15 +60,18 @@ met2CF.NARR <- function(in.path, in.prefix, outfolder, start_date, end_date, ove
     renamevars <- list("-v", "lat,latitude", "-v", "lon,longitude")
     for(i in 1:length(vars)) {
       file <- file.path(in.path, paste0(vars[i],".",y,".nc"))
-      if (verbose)
+      if (verbose){
         print(paste(c("ncpdq", list("-A", "-U", "-4", "--no_tmp_fl", file, tmpfile)), collapse=" "))
+      }
       system2("ncpdq", list("-A", "-U", "-4", "--no_tmp_fl", file, tmpfile))
       renamevars <- c(renamevars, c("-v", paste0(svars[i], ",", cfvars[i])))
     }
 
     # rename all variables
-    if (verbose)
-      print(paste(c("ncrename", c(renamevars, tmpfile)), collapse=" "))
+    if (verbose){
+      print(paste(c("ncrename", c(renamevars, tmpfile)), collapse=" "))      
+    }
+
     system2("ncrename", c(renamevars, tmpfile))
 
     # finally rename file

@@ -17,33 +17,35 @@ status.end <- function(status="DONE") {
 require(PEcAn.all)
 library(PEcAn.assim.sequential)
 library(PEcAn.visualization)
+library(PEcAn.allometry)
+library(mvtnorm)
+library(rjags)
+library(reshape2)
 #--------------------------------------------------------------------------------------------------#
 #
-#  dir.create("~/demo.sda")
-#  clean.settings("~/demo.pda/demo.xml","~/demo.sda/demo.xml")
 
 #---------------- Load PEcAn settings file. -------------------------------------------------------#
 # Open and read in settings file for PEcAn run.
-settings <- read.settings("~/demo.sda/demo.xml")
+settings <- read.settings("pecan.SDA.xml") 
 #--------------------------------------------------------------------------------------------------#
 
 #---------------- Load plot and tree ring data. -------------------------------------------------------#
 status.start("LOAD DATA")
 ## Read tree data
-trees <- read.csv("/home/carya/Camp2014/ForestPlots/treecores2014.csv")
+trees <- read.csv("~/Camp2016/ForestPlots/2016/TenderfootBog_2016_Cleaned.csv")
 
 ## Read tree ring data
-rings <- Read_Tuscon("/home/carya/Camp2014/ForestPlots/Tucson/")
+rings <- Read_Tucson("~/Camp2016/ForestPlots/2016/TucsonCombined/")
 
 ## Match observations & format for JAGS
-combined <- matchInventoryRings(trees,rings,extractor="Tag",nyears=36,coredOnly=FALSE)
-data <- buildJAGSdata_InventoryRings(combined)
+combined <- matchInventoryRings(trees,rings,extractor="Tag",nyears=39,coredOnly=FALSE) #WARNINGS
+data <- buildJAGSdata_InventoryRings(combined) #WARNINGS
 status.end()
 
 #---------------- Load plot and tree ring data. -------------------------------------------------------#
 status.start("TREE RING MODEL")
 ## Tree Ring model
-n.iter = 3000
+n.iter = 5000
 jags.out = InventoryGrowthFusion(data,n.iter=n.iter)
 save(trees,rings,combined,data,jags.out,
      file=file.path(settings$outdir,"treering.Rdata"))
@@ -55,7 +57,6 @@ status.end()
 
 #-------------- Allometry Model -------------------------------#
 status.start("ALLOMETRY")
-library(PEcAn.allometry)
 con <- db.open(settings$database$bety)
 pft.data = list()
 for(ipft in 1:length(settings$pfts)){  ## loop over PFTs
@@ -67,31 +68,44 @@ allom.stats = AllomAve(pft.data,outdir = settings$outdir,ngibbs=n.iter/10)
 save(allom.stats,file=file.path(settings$outdir,"allom.stats.Rdata"))
 status.end()
 
-#-------------- Convert tree-level growth & diamter to stand-level NPP & AGB -------------------------------#
+#-------------- Convert tree-level growth & diameter to stand-level NPP & AGB -------------------------------#
 status.start("PLOT2AGB")
 out = as.matrix(jags.out)
 sel = grep('x[',colnames(out),fixed=TRUE)
-state = plot2AGB(combined,out[,sel],settings$outdir,allom.stats,unit.conv=0.01)
-obs = data.frame(mean = apply(state$NPP[1,,],2,mean,na.rm=TRUE),
-                 sd = apply(state$NPP[1,,],2,sd,na.rm=TRUE))
+unit.conv = pi*10^2/10000
+state = plot2AGB(combined,out[,sel],settings$outdir,list(allom.stats[[2]]),unit.conv=unit.conv)
+
+NPP.conv <- .48 #Mg/ha/yr -> MgC/ha/yr
+AGB.conv <- (1/10000)*(1000/1)*.48 #Mg/ha -> kgC/m2
+
+NPP = apply(state$NPP[1,,],2,mean,na.rm=TRUE)*NPP.conv##MgC/ha/yr 
+AGB = apply(state$AGB[1,,],2,mean,na.rm=TRUE)*AGB.conv#kgC/m2
+
+obs.mean <- list()
+for(i in 1:length(NPP)) {
+  obs.mean[[i]]<-c(NPP[i],AGB[i])
+  names(obs.mean[[i]])<-c("NPP",'AbvGrndWood')
+}
+
+obs.cov <- list()
+for(i in 1:length(NPP)){
+  obs.cov[[i]]<- cov(cbind(state$NPP[,,i]*NPP.conv,state$AGB[,,i]*AGB.conv))
+  colnames(obs.cov[[i]]) <- c("NPP","AbvGrndWood")
+  rownames(obs.cov[[i]]) <- c("NPP","AbvGrndWood")
+}
 status.end()
 
 #---------------- Build Initial Conditions ----------------------------------------------------------------------#
 status.start("IC")
-ne = as.numeric(settings$assim.sequential$n.ensemble)
+ne = as.numeric(settings$state.data.assimilation$n.ensemble)
 IC = sample.IC.SIPNET(ne,state)
 status.end()
 
-#---------------- Load Priors ----------------------------------------------------------------------#
-status.start("PRIORS")
-prior = sample.parameters(ne,settings,con)
-status.end()
-
 #--------------- Assimilation -------------------------------------------------------#
-status.start("MCMC")
-sda.enkf(settings,IC,prior,obs)
+status.start("EnKF")
+sda.enkf(settings=settings, obs.mean = obs.mean,
+         obs.cov = obs.cov, IC = IC, Q = NULL)
 status.end()
-
 #--------------------------------------------------------------------------------------------------#
 ### PEcAn workflow run complete
 status.start("FINISHED")

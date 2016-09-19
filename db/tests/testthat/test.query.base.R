@@ -7,7 +7,13 @@
 # http://opensource.ncsa.illinois.edu/license.html
 #-------------------------------------------------------------------------------
 
-con <- db.open(list(driver = "PostgreSQL", user = "bety", dbname = "bety", password = "bety"))
+if(fqdn() == "pecan2.bu.edu") {
+  con <- db.open(list(host="psql-pecan.bu.edu", driver = "PostgreSQL", user = "bety", dbname = "bety", password = "bety"))
+} else {
+  con <- db.open(list(driver = "PostgreSQL", user = "bety", dbname = "bety", password = "bety"))
+}
+
+context("test db.query")
 
 test_that("db.query can execute a trivial SQL statement and return results",{  
     ans <- db.query("select count(*) from traits;", con = con)

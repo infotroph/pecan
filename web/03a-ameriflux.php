@@ -17,26 +17,40 @@ if ($authentication) {
     close_database();
     exit;
   }
+  if (get_page_acccess_level() > $min_run_level) {
+    header( "Location: history.php");
+    close_database();
+    exit;
+  }
 }
 
-# boolean parameters
-$userok=isset($_REQUEST['userok']);
-$offline=isset($_REQUEST['offline']);
-$pecan_edit = (isset($_REQUEST['pecan_edit'])) ? "checked" : "";
+#  parameters
+if (!isset($_REQUEST['hostname'])) {
+  die("Need a hostname.");
+}
+$hostname=$_REQUEST['hostname'];
 $adv_setup = (isset($_REQUEST['adv_setup'])) ? "checked" : "";
-$model_edit = (isset($_REQUEST['model_edit'])) ? "checked" : "";
-$browndog = (isset($_REQUEST['browndog'])) ? "checked" : "";
+$fluxusername = (isset($_REQUEST['fluxusername'])) ? $_REQUEST['fluxusername'] : "";
+
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 <title>PEcAn AmeriFlux Data Policy</title>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="sites.css" />
 <script type="text/javascript" src="jquery-1.7.2.min.js"></script>
 <script type="text/javascript">
   function validate() {
+    $("#next").removeAttr("disabled");       
+    $("#error").html("&nbsp;");
+
+    if ($("#fluxusername").val() == "") {
+      $("#next").attr("disabled", "disabled");
+      $("#error").html("Need to provide a username to download data (pecan)");
+    }
   }
       
   function prevStep() {
@@ -66,7 +80,12 @@ $browndog = (isset($_REQUEST['browndog'])) ? "checked" : "";
         echo "<input name=\"${key}[]\" id=\"${key}[]\" type=\"hidden\" value=\"${v}\"/>";
       }
     } else {
-      echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${value}\"/>";
+      if(strcmp($key, "notes") == 0 ) {
+        $str = htmlentities($value, ENT_QUOTES);
+        echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${str}\"/>";
+      } else {
+        echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${value}\"/>";
+      }
     }
   }
 ?>
@@ -75,7 +94,7 @@ $browndog = (isset($_REQUEST['browndog'])) ? "checked" : "";
 <?php if ($adv_setup == "checked"){?> 
 	<form id="formnext" method="POST" action="07-analysis.php">
 <?php } else { ?>
-    	<form id="formnext" method="POST" action="04-runpecan.php">
+  <form id="formnext" method="POST" action="<?php echo ($hostname != $fqdn ? '04-remote.php' : '04-runpecan.php'); ?>">
 <?php }?>
 
 <?php
@@ -85,22 +104,25 @@ $browndog = (isset($_REQUEST['browndog'])) ? "checked" : "";
         echo "<input name=\"${key}[]\" id=\"${key}[]\" type=\"hidden\" value=\"${v}\"/>";
       }
     } else {
-      echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${value}\"/>";
+      if (strcmp($key, "notes") == 0 ) {
+        $str = htmlentities($value, ENT_QUOTES);
+        echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${str}\"/>";
+      } else if (strcmp($key, "fluxusername") != 0 ) {
+        echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${value}\"/>";
+      }
     }
   }
 ?>
+      <label title="Used when downloading the data">Username (<a href="https://ameriflux-data.lbl.gov/Accounts/Pages/default.aspx" target="_blank">register here</a>)</label>
+      <input id="fluxusername" name="fluxusername" type="text" value="<?php echo $fluxusername; ?>" onkeyup="validate()"/>
+      <div class="spacer"></div>
+
       <span id="error" class="small">&nbsp;</span>
       <input id="prev" type="button" value="Prev" onclick="prevStep();" />
       <input id="next" type="button" value="Agree" onclick="nextStep();" />    
       <div class="spacer"></div>
     </form>
-<?php
-  if (check_login()) {
-    echo "<p></p>";
-    echo "Logged in as " . get_user_name();
-    echo "<a href=\"index.php?logout\" id=\"logout\">logout</a>";
-  }
-?>    
+<?php whoami(); ?>    
   </div>
   <div id="output">
 <h1>Data Policy</h1>

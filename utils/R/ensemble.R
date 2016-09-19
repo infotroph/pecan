@@ -48,7 +48,7 @@ read.ensemble.output <- function(ensemble.size, pecandir, outdir,
 #==================================================================================================#
 ##' Get parameter values used in ensemble
 ##'
-##' Returns a matrix of trait values sampled quasi-randomly based on the Halton sequence
+##' Returns a matrix of randomly or quasi-randomly sampled trait values 
 ##' to be assigned to traits over several model runs.
 ##' given the number of model runs and a list of sample distributions for traits
 ##' The model run is indexed first by model run, then by trait
@@ -56,16 +56,20 @@ read.ensemble.output <- function(ensemble.size, pecandir, outdir,
 ##' @title Get Ensemble Samples
 ##' @name get.ensemble.samples
 ##' @param ensemble.size number of runs in model ensemble
-##' @param pft.samples random samples from parameter distribution, e.g. from a MCMC chain or a 
+##' @param pft.samples random samples from parameter distribution, e.g. from a MCMC chain  
 ##' @param env.samples env samples
-##' @param method the method used to generate the ensemble samples.  default = halton
-##' @return matrix of quasi-random (overdispersed) samples from trait distributions
+##' @param method the method used to generate the ensemble samples. Random generators: uniform, uniform with latin hypercube permutation. Quasi-random generators: halton, sobol, torus. Random generation draws random variates whereas quasi-random generation is deterministic but well equidistributed. Default is uniform. For small ensemble size with relatively large parameter number (e.g ensemble size < 5 and # of traits > 5) use methods other than halton. 
+##' @return matrix of (quasi-)random samples from trait distributions
 ##' @export
 ##' @import randtoolbox
-##' @references Halton, J. (1964), Algorithm 247: Radical-inverse quasi-random point sequence, 
-##' ACM, p. 701, doi:10.1145/355588.365104.
 ##' @author David LeBauer
-get.ensemble.samples <- function(ensemble.size, pft.samples,env.samples,method="halton") {
+get.ensemble.samples <- function(ensemble.size, pft.samples, env.samples, method="uniform", ...) {
+  
+  if(is.null(method)) {
+    logger.info("No sampling method supplied, defaulting to uniform random sampling")
+    method="uniform"
+  }
+  
   ##force as numeric for compatibility with Fortran code in halton()
   ensemble.size <- as.numeric(ensemble.size)
   if(ensemble.size <= 0){
@@ -81,15 +85,36 @@ get.ensemble.samples <- function(ensemble.size, pft.samples,env.samples,method="
     }
         
     total.sample.num <- sum(sapply(pft.samples, length))
-    halton.samples <- NULL
-    if(method == "halton"){
-      halton.samples <- halton(n = ensemble.size, dim=total.sample.num)
-      ##force as a matrix in case length(samples)=1
-      halton.samples <- as.matrix(halton.samples)
-    } else {
-      #uniform random
-      halton.samples <- matrix(runif(ensemble.size*total.sample.num), ensemble.size, total.sample.num)
-    }
+    random.samples <- NULL
+
+      if(method == "halton"){
+        logger.info("Using ", method, "method for sampling")
+        random.samples <- halton(n = ensemble.size, dim=total.sample.num, ...)
+        ##force as a matrix in case length(samples)=1
+        random.samples <- as.matrix(random.samples)
+      } else if(method == "sobol"){
+        logger.info("Using ", method, "method for sampling")
+        random.samples <- sobol(n = ensemble.size, dim=total.sample.num, ...)
+        ##force as a matrix in case length(samples)=1
+        random.samples <- as.matrix(random.samples)
+      } else if(method == "torus"){
+        logger.info("Using ", method, "method for sampling")
+        random.samples <- torus(n = ensemble.size, dim=total.sample.num, ...)
+        ##force as a matrix in case length(samples)=1
+        random.samples <- as.matrix(random.samples)
+      } else if(method == "lhc"){
+        logger.info("Using ", method, "method for sampling")
+        random.samples <- lhc(t(matrix(0:1, ncol=total.sample.num, nrow=2)),ensemble.size)
+      } else if(method == "uniform"){
+        logger.info("Using ", method, "random sampling")
+        #uniform random
+        random.samples <- matrix(runif(ensemble.size*total.sample.num), ensemble.size, total.sample.num)
+      } else {
+        logger.info("Method ", method, " has not been implemented yet, using uniform random sampling")
+        #uniform random
+        random.samples <- matrix(runif(ensemble.size*total.sample.num), ensemble.size, total.sample.num)
+      }
+    
     
     ensemble.samples <- list()
     
@@ -101,7 +126,7 @@ get.ensemble.samples <- function(ensemble.size, pft.samples,env.samples,method="
         col.i<-col.i+1
         ensemble.samples[[pft.i]][, trait.i] <- 
           quantile(pft.samples[[pft.i]][[trait.i]],
-                   halton.samples[, col.i])
+                   random.samples[, col.i])
       } # end trait
       ensemble.samples[[pft.i]] <- as.data.frame(ensemble.samples[[pft.i]])
       colnames(ensemble.samples[[pft.i]]) <- names(pft.samples[[pft.i]])
@@ -131,7 +156,7 @@ write.ensemble.configs <- function(defaults, ensemble.samples, settings,
   
   my.write.config <- paste("write.config.", model, sep="")
 
-  if(is.null(ensemble.samples)) return(NULL)
+  if(is.null(ensemble.samples)) return(list(runs=NULL, ensemble.id=NULL))
   
   # Open connection to database so we can store all run/ensemble information
   if(write.to.db){
@@ -217,9 +242,9 @@ write.ensemble.configs <- function(defaults, ensemble.samples, settings,
         "met data    : ", settings$run$site$met, "\n",
         "start date  : ", settings$run$start.date, "\n",
         "end date    : ", settings$run$end.date, "\n",
-        "hostname    : ", settings$run$host$name, "\n",
-        "rundir      : ", file.path(settings$run$host$rundir, run.id), "\n",
-        "outdir      : ", file.path(settings$run$host$outdir, run.id), "\n",
+        "hostname    : ", settings$host$name, "\n",
+        "rundir      : ", file.path(settings$host$rundir, run.id), "\n",
+        "outdir      : ", file.path(settings$host$outdir, run.id), "\n",
         file=file.path(settings$rundir, run.id, "README.txt"), sep='')
     
     do.call(my.write.config, args = list(defaults = defaults,

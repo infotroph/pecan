@@ -4,24 +4,26 @@
 exec 3>&1
 exec &> "@OUTDIR@/logfile.txt"
 
+# host specific setup
+@HOST_SETUP@
+
 # create output folder
 mkdir -p "@OUTDIR@"
 
 # see if application needs running
-if [ ! -e "@OUTDIR@/OUT.csv" ]; then
+if [ ! -e "@OUTDIR@/linkages.out.Rdata" ]; then
   cd "@RUNDIR@"
-  ln -s "@SITE_MET@" test_text.txt
   
-  "@BINARY@"
+  echo "require (linkages)
+linkages('@INPUT@','@OUTDIR@','@RESTART@','@RESTARTFILE@')
+" | R --vanilla
   STATUS=$?
   
   # check the status
   if [ $STATUS -ne 0 ]; then
-    echo -e "ERROR IN LINKAGES RUN\nLogile is located at '@OUTDIR@/logfile.txt'" >&3
+    echo -e "ERROR IN LINKAGES RUN\nLogfile is located at '@OUTDIR@/logfile.txt'" >&3
     exit $STATUS
   fi
-  
-  cp OUT.csv @OUTDIR@
  
   # convert to MsTMIP
   echo "require (PEcAn.LINKAGES)
@@ -34,5 +36,8 @@ cp  "@RUNDIR@/README.txt" "@OUTDIR@/README.txt"
 
 # run getdata to extract right variables
 
+# host specific teardown
+@HOST_TEARDOWN@
+
 # all done
-echo -e "LINKAGES FINISHED\nLogile is located at '@OUTDIR@/logfile.txt'" >&3
+echo -e "LINKAGES FINISHED\nLogfile is located at '@OUTDIR@/logfile.txt'" >&3

@@ -20,6 +20,11 @@ if ($authentication) {
     close_database();
     exit;
   }
+  if (get_page_acccess_level() > $min_run_level) {
+    header( "Location: history.php");
+    close_database();
+    exit;
+  }
 }
 
 # boolean parameters
@@ -31,7 +36,6 @@ $model_edit = (isset($_REQUEST['model_edit'])) ? "checked" : "";
 $browndog = (isset($_REQUEST['browndog'])) ? "checked" : "";
 $ensemble_analysis = (isset($_REQUEST['ensemble_analsysis'])) ? "checked" : "";
 $sensitivity_analysis = (isset($_REQUEST['sensitivity'])) ? "checked" : "";
-$qsub = (isset($_REQUEST['qsub'])) ? "checked" : "";
 
 if (!isset($_REQUEST['siteid'])) {
   die("Need a siteid.");
@@ -46,24 +50,23 @@ $modelid=$_REQUEST['modelid'];
 if (!isset($_REQUEST['hostname'])) {
   die("Need a hostname.");
 }
-
 $hostname=$_REQUEST['hostname'];
 
 # parse original form data
-$selected_pfts = array();
-if (isset($_REQUEST['pft'])) {
-  $selected_pfts = $_REQUEST['pft'];
+if (!isset($_REQUEST['pft'])) {
+  die("Need a pft.");
 }
+$selected_pfts = $_REQUEST['pft'];
 
-$startdate = "2006/01/01";
-if (isset($_REQUEST['start'])) { 
-  $startdate=$_REQUEST['start'];
+if (!isset($_REQUEST['start'])) { 
+  die("Need a start date.");
 }
+$startdate=$_REQUEST['start'];
 
-$enddate = "2006/12/31";
-if (isset($_REQUEST['end'])) { 
-  $enddate=$_REQUEST['end'];
+if (!isset($_REQUEST['end'])) { 
+  die("Need a end date.");
 }
+$enddate=$_REQUEST['end'];
 
 $met= "";
 if (isset($_REQUEST['input_met'])) { 
@@ -82,13 +85,27 @@ if (!$stmt->execute(array($siteid))) {
 }
 $siteinfo = $stmt->fetch(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
+
+// get model information
+$stmt = $pdo->prepare("SELECT * FROM models WHERE id=?");
+if (!$stmt->execute(array($modelid))) {
+  die('Invalid query: ' . error_database());
+}
+$modelinfo = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt->closeCursor();
+
+if (isset($modelinfo['revision'])) {
+  $modelname = $modelinfo['model_name'] . " (" . $modelinfo['revision'] . ")";
+} else {
+  $modelname = $modelinfo['model_name'];
+}
+
 ?>
-
-
 <!DOCTYPE html>
 <html>
 <head>
 <title>PEcAn Parameter Selection</title>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="sites.css" />
@@ -100,18 +117,14 @@ $stmt->closeCursor();
   function validate() {
     $("#next").removeAttr("disabled");       
     $("#error").html("&nbsp;");
-    // check if ensemble analysis or sensitivity analysis is set
-    if (!($("#ensemble_analysis").is(":checked")) && !($("#sensitivity_analysis").is(":checked"))) {
-        $("#next").attr("disabled", "disabled");
-        $("#error").html("The ensemble and/or sensitivity analysis features should be checked.");
-    }
+
     // ensemble 
-    if ($("#ensemble_analysis").is(":checked") && ($("#runs").val().length < 1 || $("#runs").val() < 1 || !/^[0-9]+$/.test($("#runs").val()))) {
+    if (($("#runs").val().length < 1 || $("#runs").val() < 1 || !/^[0-9]+$/.test($("#runs").val()))) {
         $("#next").attr("disabled", "disabled");
         $("#error").html("The ensemble should be a positive integer value.");
     }
     //make sure variable field is populated if ensemble analysis is checked
-    if (($("#ensemble_analysis").is(":checked")) && $("#variables").val().length < 1) {
+    if ($("#variables").val().length < 1) {
         $("#next").attr("disabled", "disabled");
         $("#error").html("The need to set a varaible value.");
     }
@@ -129,9 +142,14 @@ $stmt->closeCursor();
   $(document).ready(function () {
     validate();
   });
-<?php } else { ?>
-    google.load("maps", "3",  {other_params:"sensor=false"});
-  google.setOnLoadCallback(mapsLoaded);
+<?php
+} else {
+  $other_params = "sensor=false";
+  if (isset($googleMapKey) && $googleMapKey != "") {
+    $other_params .= "&key=$googleMapKey";
+  }
+  echo "  google.load('maps', '3', { other_params : '$other_params', callback: 'mapsLoaded'});"
+?>
     
     function mapsLoaded() {
     var latlng = new google.maps.LatLng(<?php echo $siteinfo['lat']; ?>, <?php echo $siteinfo['lon']; ?>);
@@ -150,7 +168,8 @@ $stmt->closeCursor();
     var info="<b><?php echo $siteinfo['sitename']; ?></b><br />";
     info+="<?php echo $siteinfo['city']; ?>, <?php echo $siteinfo['state']; ?>, <?php echo $siteinfo['country']; ?><br/>";
     info+="PFTs: <?php echo implode(",",$selected_pfts);?><br/>";
-    info+="Dates: <?php echo $startdate; ?> - <?php echo $enddate; ?>";
+    info+="Dates: <?php echo $startdate; ?> - <?php echo $enddate; ?><br/>";
+    info+="Model: <?php echo $modelname; ?>"
     var infowindow = new google.maps.InfoWindow({content: info});
     infowindow.open(map, marker);
     validate();
@@ -164,28 +183,33 @@ $stmt->closeCursor();
     <h1>Selected Site</h1>
     <p>Set parameters for the run.</p>
 
-    <form id="formprev" method="POST" action="03-input.php">
+    <form id="formprev" method="POST" action="03-inputs.php">
 <?php if ($offline) { ?>
       <input name="offline" type="hidden" value="offline">
 <?php } ?>
 <?php foreach($_REQUEST as $key => $value){
-	if(is_array($value)) {
-	  foreach($value as $v) {
-	    echo "<input name=\"${key}[]\" id=\"${key}[]\" type=\"hidden\" value=\"${v}\"/>";
-	  }
-	} else {
-	    echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${value}\"/>";
-	}
+        if(is_array($value)) {
+          foreach($value as $v) {
+            echo "<input name=\"${key}[]\" id=\"${key}[]\" type=\"hidden\" value=\"${v}\"/>";
+          }   
+        } else {
+          if(strcmp($key, "notes") == 0) {
+            $str = htmlentities($value, ENT_QUOTES);
+            echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${str}\"/>";
+          } else {
+            echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${value}\"/>";
+          }
+        }
       }
 ?>
-    </form>
+</form>
 
-    <form id="formnext" method="POST" action="04-runpecan.php">
+<form id="formnext" method="POST" action="<?php echo ($hostname != $fqdn ? '04-remote.php' : '04-runpecan.php'); ?>">
 <?php if ($offline) { ?>
-      <input name="offline" type="hidden" value="on">
+<input name="offline" type="hidden" value="on">
 <?php } ?>
 <?php if ($userok) { ?>
-      <input name="userok" type="hidden" value="on">
+<input name="userok" type="hidden" value="on">
 <?php } ?>
 <?php foreach($_REQUEST as $key => $value){
 	if(is_array($value)) {
@@ -193,29 +217,25 @@ $stmt->closeCursor();
 	    echo "<input name=\"${key}[]\" id=\"${key}[]\" type=\"hidden\" value=\"${v}\"/>";
 	  }
 	} else {
-	    echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${value}\"/>";
+          if(strcmp($key, "notes") == 0) {
+            $str = htmlentities($value, ENT_QUOTES);
+            echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${str}\"/>";
+          } else {
+            echo "<input name=\"${key}\" id=\"${key}\" type=\"hidden\" value=\"${value}\"/>";
+          }
 	}
       }
 ?>
-
       <div class="spacer"></div>
-      <label title="Enable number of run for analysis">Ensemble analysis</label>
-      <input id="ensemble_analysis" name="ensemble_analysis" type="checkbox" value="<?php echo $ensemble_analysis ?>" checked onChange="validate();"/>
-      <div class="spacer"></div>
-      <label>Runs<sup>*</sup></label>
+      <span title="Number of runs in the Ensemble Analysis">
+      <label>Runs<sup>*</sup></label></span>
       <input type="text" name="runs" id="runs" value="<?php echo 1; ?>" onChange="validate();"/>
       <div class="spacer"></div>
-      <label>Variables<sup>*</sup></label>
+      <a href="https://pecan.gitbooks.io/pecan-documentation/content/models/variables.md" title="Model output variables to run analyses on. Link opens variable name table">
+      <label>Variables<sup>*</sup></label></a>
       <input type="text" name="variables" id="variables" value="<?php echo "NPP"; ?>" onChange="validate();"/>
       <div class="spacer"></div>
-      <label>Notes</label>
-      <!--<input type="text" name="notes" id="notes" value="" />-->
-      <textarea name="notes" id="notes" rows="4" width="184px" style="padding:4px 2px;width:184px;font-size:12px;border: solid 1px #aacfe4;text-overflow:ellipsis;"></textarea>
-      <div class="spacer"></div>
 
-      <div class="spacer"></div>
-      <label title="Enable sensitivity for analysis">Enable sensitivity</label>
-      <input id="sensitivity_analysis" name="sensitivity_analysis" type="checkbox" value="<?php echo $sensitivity_analysis ?>"  onChange="validate();" />
       <div class="spacer"></div>
       <label type="hidden">Sensitivity</label>
       <input type="text" name="sensitivity" id="sensitivity" value="<?php echo "" ?>" onChange="validate();"/>
@@ -230,18 +250,23 @@ $stmt->closeCursor();
       <input id="next" type="button" value="Next" onclick="nextStep();" <?php if (!$userok) echo "disabled" ?>/>    
       <div class="spacer"></div>
     </form>
-<?php
-  if (check_login()) {
-    echo "<p></p>";
-    echo "Logged in as " . get_user_name();
-    echo "<a href=\"index.php?logout\" id=\"logout\">logout</a>";
-  }
-?>    
+<?php whoami(); ?>  
+<p>
+  <a href="https://pecan.gitbooks.io/pecan-documentation/content/" target="_blank">Documentation</a>
+  <br>
+  <a href="https://gitter.im/PecanProject/pecan" target="_blank">Chat Room</a>
+  <br>
+  <a href="https://github.com/PecanProject/pecan/issues/new" target="_blank">Bug Report</a>
+</p>
   </div>
   <div id="output">
-    name : <b><?php echo $siteinfo["sitename"]; ?></b><br/>
-    address : <?php echo $siteinfo["city"]; ?>, <?php echo $siteinfo["country"]; ?><br/>
-    location : <?php echo $siteinfo["lat"]; ?>, <?php echo $siteinfo["lon"]; ?><br/>
+    Name : <b><?php echo $siteinfo["sitename"]; ?></b><br/>
+    Address : <?php echo $siteinfo["city"]; ?>, <?php echo $siteinfo["country"]; ?><br/>
+    Location : <?php echo $siteinfo["lat"]; ?>, <?php echo $siteinfo["lon"]; ?><br/>
+    <br/>
+    PFTs : <?php echo implode(",",$selected_pfts); ?><br/>
+    Dates : <?php echo $startdate; ?> - <?php echo $enddate; ?><br/>
+    Model : <?php echo $modelname; ?><br/>
   </div>
   <div id="footer"><?php echo get_footer(); ?></div>
 </div>
