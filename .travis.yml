@@ -169,8 +169,10 @@ script:
   - make .test/"$TEST_PKG"
   - R CMD build "$TEST_PKG"
   - R CMD check *.gz
-  - echo 'Testing Integration'
-  - ./tests/integration.sh travis
+  - if [[ "$TEST_PKG" == "base/all" ]]; then
+      echo 'Testing Integration';
+      ./tests/integration.sh travis;
+    fi
   - if [[ `git status -s` ]]; then 
       echo "These files were changed by the build process:";
       git status -s;
