@@ -155,19 +155,19 @@ services:
 #   - popd
 #   - set +e
 
-script:
-  - set -e
-  - echo 'Testing PEcAn packages'
-  - make .test/"$TEST_PKG"
-  - R CMD build "$TEST_PKG"
-  - R CMD check *.gz
-  - if [[ `git status -s` ]]; then
-      echo "These files were changed by the build process:";
-      git status -s;
-      echo "Have you run devtools::check and commited any updated Roxygen outputs?";
-      exit 1;
-    fi
-  - set +e
+# script:
+#   - set -e
+#   - echo 'Testing PEcAn packages'
+#   - make .test/"$TEST_PKG"
+#   - R CMD build "$TEST_PKG"
+#   - R CMD check *.gz
+#   - if [[ `git status -s` ]]; then
+#       echo "These files were changed by the build process:";
+#       git status -s;
+#       echo "Have you run devtools::check and commited any updated Roxygen outputs?";
+#       exit 1;
+#     fi
+#   - set +e
 
 install: skip
 
@@ -211,46 +211,52 @@ jobs:
         # but many dependency compilations seem not parallel-safe.
         # More debugging needed.
         - NCPUS=2 make -j1 .install/"$TEST_PKG"
+        - if [[ `git status -s` ]]; then
+            echo "These files were changed by the build process:";
+            git status -s;
+            echo "Have you run devtools::check and commited any updated Roxygen outputs?";
+            exit 1;
+          fi
         - set +e
     - stage: test
-      env: TEST_PKG=base/all
-    - env: TEST_PKG=base/db
-    - env: TEST_PKG=base/logger
-    - env: TEST_PKG=base/qaqc
-    - env: TEST_PKG=base/remote
-    - env: TEST_PKG=base/settings
-    - env: TEST_PKG=base/utils
-    - env: TEST_PKG=base/visualization
-    - env: TEST_PKG=base/workflow
-    - env: TEST_PKG=models/biocro
-    - env: TEST_PKG=models/clm45
-    - env: TEST_PKG=models/dalec
-    - env: TEST_PKG=models/ed
-    - env: TEST_PKG=models/fates
-    - env: TEST_PKG=models/gday
-    - env: TEST_PKG=models/jules
-    - env: TEST_PKG=models/linkages
-    - env: TEST_PKG=models/lpjguess
-    - env: TEST_PKG=models/maat
-    - env: TEST_PKG=models/maespa
-    - env: TEST_PKG=models/preles
-    - env: TEST_PKG=models/sipnet
-    - env: TEST_PKG=models/template
-    - env: TEST_PKG=modules/allometry
-    - env: TEST_PKG=modules/assim.batch
-    - env: TEST_PKG=modules/assim.sequential
-    - env: TEST_PKG=modules/benchmark
-    - env: TEST_PKG=modules/data.atmosphere
-    - env: TEST_PKG=modules/data.hydrology
-    - env: TEST_PKG=modules/data.land
-    - env: TEST_PKG=modules/data.mining
-    - env: TEST_PKG=modules/data.remote
-    - env: TEST_PKG=modules/emulator
-    - env: TEST_PKG=modules/meta.analysis
-    - env: TEST_PKG=modules/photosynthesis
-    - env: TEST_PKG=modules/priors
-    - env: TEST_PKG=modules/rtm
-    - env: TEST_PKG=modules/uncertainty
+      script: make .check/base/all
+    - script: make .check/base/db
+    - script: make .check/base/logger
+    - script: make .check/base/qaqc
+    - script: make .check/base/remote
+    - script: make .check/base/settings
+    - script: make .check/base/utils
+    - script: make .check/base/visualization
+    - script: make .check/base/workflow
+    - script: make .check/models/biocro
+    - script: make .check/models/clm45
+    - script: make .check/models/dalec
+    - script: make .check/models/ed
+    - script: make .check/models/fates
+    - script: make .check/models/gday
+    - script: make .check/models/jules
+    - script: make .check/models/linkages
+    - script: make .check/models/lpjguess
+    - script: make .check/models/maat
+    - script: make .check/models/maespa
+    - script: make .check/models/preles
+    - script: make .check/models/sipnet
+    - script: make .check/models/template
+    - script: make .check/modules/allometry
+    - script: make .check/modules/assim.batch
+    - script: make .check/modules/assim.sequential
+    - script: make .check/modules/benchmark
+    - script: make .check/modules/data.atmosphere
+    - script: make .check/modules/data.hydrology
+    - script: make .check/modules/data.land
+    - script: make .check/modules/data.mining
+    - script: make .check/modules/data.remote
+    - script: make .check/modules/emulator
+    - script: make .check/modules/meta.analysis
+    - script: make .check/modules/photosynthesis
+    - script: make .check/modules/priors
+    - script: make .check/modules/rtm
+    - script: make .check/modules/uncertainty
 
     # - stage: integration
     #   # if: branch IN (master, develop, ^release)
