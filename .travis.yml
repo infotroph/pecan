@@ -183,6 +183,9 @@ script:
 
 after_script:
   - set -e
+  - if [[ "$TEST_PKG" != "base/all" ]]; then
+      travis_terminate 0;
+    fi
   - echo 'Building Book'
   - pushd book_source
   - make
