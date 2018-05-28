@@ -204,7 +204,7 @@ stages:
 jobs:
   include:
     - stage: setup
-      script:
+      install:
         - set -e
         - pushd $HOME
         - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
@@ -235,7 +235,9 @@ jobs:
         # More debugging needed.
         - NCPUS=2 make -j1 .install/"$TEST_PKG"
         - set +e
+      script: true
     - stage: test
+      install: true
       script:
         - set -e
         - echo 'Testing PEcAn packages'
