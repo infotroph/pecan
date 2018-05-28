@@ -130,13 +130,13 @@ notifications:
 services:
   - docker
 
-install:
-  - pushd $HOME
-  - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
-  - tar zxf sipnet_unk.tar.gz
-  - cd sipnet_unk
-  - make
-  - popd
+# install:
+#   - pushd $HOME
+#   - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
+#   - tar zxf sipnet_unk.tar.gz
+#   - cd sipnet_unk
+#   - make
+#   - popd
 
 # before_script:
 #  - sudo service postgresql stop
@@ -206,6 +206,12 @@ jobs:
     - stage: setup
       script:
         - set -e
+        - pushd $HOME
+        - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
+        - tar zxf sipnet_unk.tar.gz
+        - cd sipnet_unk
+        - make
+        - popd
         - sudo service postgresql stop
         - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
         - echo -n "Waiting for Postgres to start...";
