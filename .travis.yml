@@ -138,59 +138,128 @@ install:
   - make
   - popd
 
-before_script:
-  - sudo service postgresql stop
-  - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
-  - echo -n "Waiting for Postgres to start...";
-    until psql -U postgres -c 'select 1' >/dev/null 2>&1;
-      do echo -n ".";
-      sleep 1;
-    done;
-    echo " OK"
-  - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
-  - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
-  - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
-  - psql -q -o /dev/null -U postgres < bety.sql
-  - rm bety.sql
-  - ./scripts/add.models.sh
-  - chmod +x book_source/deploy.sh
-  - chmod +x documentation/tutorials/deploy.sh
+# before_script:
+#  - sudo service postgresql stop
+#  - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
+#  - echo -n "Waiting for Postgres to start...";
+#    until psql -U postgres -c 'select 1' >/dev/null 2>&1;
+#      do echo -n ".";
+#      sleep 1;
+#    done;
+#    echo " OK"
+#   - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
+#   - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
+#   - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
+#   - psql -q -o /dev/null -U postgres < bety.sql
+#   - rm bety.sql
+#   - ./scripts/add.models.sh
+#   - chmod +x book_source/deploy.sh
+#   - chmod +x documentation/tutorials/deploy.sh
 
-script:
-  - set -e
-  - echo 'Installing PEcAn packages'
-  - make .doc/"$TEST_PKG"
-  # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
-  # but many dependency compilations seem not parallel-safe.
-  # More debugging needed.
-  - NCPUS=2 make -j1 .install/"$TEST_PKG"
-  - echo 'Testing PEcAn packages'
-  - make .test/"$TEST_PKG"
-  - R CMD build "$TEST_PKG"
-  - R CMD check *.gz
-  - if [[ "$TEST_PKG" == "base/all" ]]; then
-      echo 'Testing Integration';
-      ./tests/integration.sh travis;
-    fi
-  - if [[ `git status -s` ]]; then 
-      echo "These files were changed by the build process:";
-      git status -s;
-      echo "Have you run devtools::check and commited any updated Roxygen outputs?";
-      exit 1; 
-    fi
-  - set +e
+# script:
+#   - set -e
+#   - echo 'Installing PEcAn packages'
+#   - make .doc/"$TEST_PKG"
+#   # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
+#   # but many dependency compilations seem not parallel-safe.
+#   # More debugging needed.
+#   - NCPUS=2 make -j1 .install/"$TEST_PKG"
+#   - echo 'Testing PEcAn packages'
+#   - make .test/"$TEST_PKG"
+#   - R CMD build "$TEST_PKG"
+#   - R CMD check *.gz
+#   - if [[ "$TEST_PKG" == "base/all" ]]; then
+#       echo 'Testing Integration';
+#       ./tests/integration.sh travis;
+#     fi
+#   - if [[ `git status -s` ]]; then 
+#       echo "These files were changed by the build process:";
+#       git status -s;
+#       echo "Have you run devtools::check and commited any updated Roxygen outputs?";
+#       exit 1; 
+#     fi
+#   - set +e
 
-after_script:
-  - set -e
-  - if [[ "$TEST_PKG" != "base/all" ]]; then
-      travis_terminate 0;
-    fi
-  - echo 'Building Book'
-  - pushd book_source
-  - make
-  - popd
-  - echo 'Building Tutorials'
-  - pushd documentation/tutorials
-  - make build deploy
-  - popd
-  - set +e
+# after_script:
+#   - set -e
+#   - if [[ "$TEST_PKG" != "base/all" ]]; then
+#       travis_terminate 0;
+#     fi
+#   - echo 'Building Book'
+#   - pushd book_source
+#   - make
+#   - popd
+#   - echo 'Building Tutorials'
+#   - pushd documentation/tutorials
+#   - make build deploy
+#   - popd
+#   - set +e
+
+stages:
+  - setup
+  - test
+  # - integration
+  # - deploy
+
+jobs:
+  include:
+    - stage: setup
+      script:
+        - set -e
+        - sudo service postgresql stop
+        - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
+        - echo -n "Waiting for Postgres to start...";
+          until psql -U postgres -c 'select 1' >/dev/null 2>&1;
+            do echo -n ".";
+            sleep 1;
+          done;
+          echo " OK"
+        - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
+        - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
+        - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
+        - psql -q -o /dev/null -U postgres < bety.sql
+        - rm bety.sql
+        - ./scripts/add.models.sh
+        - chmod +x book_source/deploy.sh
+        - chmod +x documentation/tutorials/deploy.sh
+        - echo 'Installing PEcAn packages'
+        # - make document
+        # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
+        # but many dependency compilations seem not parallel-safe.
+        # More debugging needed.
+        - NCPUS=2 make -j1 .install/"$TEST_PKG"
+        - set +e
+    - stage: test
+      script:
+        - set -e
+        - echo 'Testing PEcAn packages'
+        - make .test/"$TEST_PKG"
+        - R CMD build "$TEST_PKG"
+        - R CMD check *.gz
+        - if [[ `git status -s` ]]; then
+            echo "These files were changed by the build process:";
+            git status -s;
+            echo "Have you run devtools::check and commited any updated Roxygen outputs?";
+            exit 1;
+          fi
+        - set +e
+    # - stage: integration
+    #   # if: branch IN (master, develop, ^release)
+    #   script:
+    #     - set -e
+    #     - echo 'Testing Integration';
+    #     - ./tests/integration.sh travis;
+    #     - set +e
+    # - stage: deploy
+    #   # if: branch IN (master, develop, ^release)
+    #   script:
+    #     - set -e
+    #     - echo 'Building Book'
+    #     - pushd book_source
+    #     - make
+    #     - popd
+    #     - echo 'Building Tutorials'
+    #     - pushd documentation/tutorials
+    #     - make build deploy
+    #     - popd
+    #     - set +e
