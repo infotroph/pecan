@@ -28,46 +28,6 @@ cache:
     - .doc
   - packages
 
-env:
-  - TEST_PKG=base/all
-  - TEST_PKG=base/db
-  - TEST_PKG=base/logger
-  - TEST_PKG=base/qaqc
-  - TEST_PKG=base/remote
-  - TEST_PKG=base/settings
-  - TEST_PKG=base/utils
-  - TEST_PKG=base/visualization
-  - TEST_PKG=base/workflow
-  - TEST_PKG=models/biocro
-  - TEST_PKG=models/clm45
-  - TEST_PKG=models/dalec
-  - TEST_PKG=models/ed
-  - TEST_PKG=models/fates
-  - TEST_PKG=models/gday
-  - TEST_PKG=models/jules
-  - TEST_PKG=models/linkages
-  - TEST_PKG=models/lpjguess
-  - TEST_PKG=models/maat
-  - TEST_PKG=models/maespa
-  - TEST_PKG=models/preles
-  - TEST_PKG=models/sipnet
-  - TEST_PKG=models/template
-  - TEST_PKG=modules/allometry
-  - TEST_PKG=modules/assim.batch
-  - TEST_PKG=modules/assim.sequential
-  - TEST_PKG=modules/benchmark
-  - TEST_PKG=modules/data.atmosphere
-  - TEST_PKG=modules/data.hydrology
-  - TEST_PKG=modules/data.land
-  - TEST_PKG=modules/data.mining
-  - TEST_PKG=modules/data.remote
-  - TEST_PKG=modules/emulator
-  - TEST_PKG=modules/meta.analysis
-  - TEST_PKG=modules/photosynthesis
-  - TEST_PKG=modules/priors
-  - TEST_PKG=modules/rtm
-  - TEST_PKG=modules/uncertainty
-
 addons:
   apt:
     sources:
@@ -195,38 +155,6 @@ services:
 #   - popd
 #   - set +e
 
-install:
-  - set -e
-  - pushd $HOME
-  - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
-  - tar zxf sipnet_unk.tar.gz
-  - cd sipnet_unk
-  - make
-  - popd
-  - sudo service postgresql stop
-  - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
-  - echo -n "Waiting for Postgres to start...";
-    until psql -U postgres -c 'select 1' >/dev/null 2>&1;
-      do echo -n ".";
-      sleep 1;
-    done;
-    echo " OK"
-  - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
-  - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
-  - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
-  - psql -q -o /dev/null -U postgres < bety.sql
-  - rm bety.sql
-  - ./scripts/add.models.sh
-  - chmod +x book_source/deploy.sh
-  - chmod +x documentation/tutorials/deploy.sh
-  - echo 'Installing PEcAn packages'
-  # - make document
-  # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
-  # but many dependency compilations seem not parallel-safe.
-  # More debugging needed.
-  - NCPUS=2 make -j1 .install/"$TEST_PKG"
-  - set +e
-
 script:
   - set -e
   - echo 'Testing PEcAn packages'
@@ -241,6 +169,7 @@ script:
     fi
   - set +e
 
+install: skip
 
 stages:
   - setup
@@ -252,8 +181,76 @@ jobs:
   include:
     - stage: setup
       script: skip
+      install:
+        - set -e
+        - pushd $HOME
+        - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
+        - tar zxf sipnet_unk.tar.gz
+        - cd sipnet_unk
+        - make
+        - popd
+        - sudo service postgresql stop
+        - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
+        - echo -n "Waiting for Postgres to start...";
+          until psql -U postgres -c 'select 1' >/dev/null 2>&1;
+            do echo -n ".";
+            sleep 1;
+          done;
+          echo " OK"
+        - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
+        - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
+        - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
+        - psql -q -o /dev/null -U postgres < bety.sql
+        - rm bety.sql
+        - ./scripts/add.models.sh
+        - chmod +x book_source/deploy.sh
+        - chmod +x documentation/tutorials/deploy.sh
+        - echo 'Installing PEcAn packages'
+        # - make document
+        # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
+        # but many dependency compilations seem not parallel-safe.
+        # More debugging needed.
+        - NCPUS=2 make -j1 .install/"$TEST_PKG"
+        - set +e
     - stage: test
-      install: skip
+      env: TEST_PKG=base/all
+    - env: TEST_PKG=base/db
+    - env: TEST_PKG=base/logger
+    - env: TEST_PKG=base/qaqc
+    - env: TEST_PKG=base/remote
+    - env: TEST_PKG=base/settings
+    - env: TEST_PKG=base/utils
+    - env: TEST_PKG=base/visualization
+    - env: TEST_PKG=base/workflow
+    - env: TEST_PKG=models/biocro
+    - env: TEST_PKG=models/clm45
+    - env: TEST_PKG=models/dalec
+    - env: TEST_PKG=models/ed
+    - env: TEST_PKG=models/fates
+    - env: TEST_PKG=models/gday
+    - env: TEST_PKG=models/jules
+    - env: TEST_PKG=models/linkages
+    - env: TEST_PKG=models/lpjguess
+    - env: TEST_PKG=models/maat
+    - env: TEST_PKG=models/maespa
+    - env: TEST_PKG=models/preles
+    - env: TEST_PKG=models/sipnet
+    - env: TEST_PKG=models/template
+    - env: TEST_PKG=modules/allometry
+    - env: TEST_PKG=modules/assim.batch
+    - env: TEST_PKG=modules/assim.sequential
+    - env: TEST_PKG=modules/benchmark
+    - env: TEST_PKG=modules/data.atmosphere
+    - env: TEST_PKG=modules/data.hydrology
+    - env: TEST_PKG=modules/data.land
+    - env: TEST_PKG=modules/data.mining
+    - env: TEST_PKG=modules/data.remote
+    - env: TEST_PKG=modules/emulator
+    - env: TEST_PKG=modules/meta.analysis
+    - env: TEST_PKG=modules/photosynthesis
+    - env: TEST_PKG=modules/priors
+    - env: TEST_PKG=modules/rtm
+    - env: TEST_PKG=modules/uncertainty
 
     # - stage: integration
     #   # if: branch IN (master, develop, ^release)
