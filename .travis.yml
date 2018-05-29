@@ -90,56 +90,6 @@ notifications:
 services:
   - docker
 
-# install:
-#   - pushd $HOME
-#   - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
-#   - tar zxf sipnet_unk.tar.gz
-#   - cd sipnet_unk
-#   - make
-#   - popd
-
-# before_script:
-#  - sudo service postgresql stop
-#  - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
-#  - echo -n "Waiting for Postgres to start...";
-#    until psql -U postgres -c 'select 1' >/dev/null 2>&1;
-#      do echo -n ".";
-#      sleep 1;
-#    done;
-#    echo " OK"
-#   - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
-#   - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
-#   - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
-#   - psql -q -o /dev/null -U postgres < bety.sql
-#   - rm bety.sql
-#   - ./scripts/add.models.sh
-#   - chmod +x book_source/deploy.sh
-#   - chmod +x documentation/tutorials/deploy.sh
-
-# script:
-#   - set -e
-#   - echo 'Installing PEcAn packages'
-#   - make .doc/"$TEST_PKG"
-#   # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
-#   # but many dependency compilations seem not parallel-safe.
-#   # More debugging needed.
-#   - NCPUS=2 make -j1 .install/"$TEST_PKG"
-#   - echo 'Testing PEcAn packages'
-#   - make .test/"$TEST_PKG"
-#   - R CMD build "$TEST_PKG"
-#   - R CMD check *.gz
-#   - if [[ "$TEST_PKG" == "base/all" ]]; then
-#       echo 'Testing Integration';
-#       ./tests/integration.sh travis;
-#     fi
-#   - if [[ `git status -s` ]]; then 
-#       echo "These files were changed by the build process:";
-#       git status -s;
-#       echo "Have you run devtools::check and commited any updated Roxygen outputs?";
-#       exit 1; 
-#     fi
-#   - set +e
-
 # after_script:
 #   - set -e
 #   - if [[ "$TEST_PKG" != "base/all" ]]; then
@@ -153,20 +103,6 @@ services:
 #   - pushd documentation/tutorials
 #   - make build deploy
 #   - popd
-#   - set +e
-
-# script:
-#   - set -e
-#   - echo 'Testing PEcAn packages'
-#   - make .test/"$TEST_PKG"
-#   - R CMD build "$TEST_PKG"
-#   - R CMD check *.gz
-#   - if [[ `git status -s` ]]; then
-#       echo "These files were changed by the build process:";
-#       git status -s;
-#       echo "Have you run devtools::check and commited any updated Roxygen outputs?";
-#       exit 1;
-#     fi
 #   - set +e
 
 install: skip
@@ -210,7 +146,7 @@ jobs:
         # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
         # but many dependency compilations seem not parallel-safe.
         # More debugging needed.
-        - NCPUS=2 make -j1 .install/"$TEST_PKG"
+        - NCPUS=2 make -j1 install
         - if [[ `git status -s` ]]; then
             echo "These files were changed by the build process:";
             git status -s;
@@ -219,44 +155,9 @@ jobs:
           fi
         - set +e
     - stage: test
-      script: make .check/base/all
-    - script: make .check/base/db
-    - script: make .check/base/logger
-    - script: make .check/base/qaqc
-    - script: make .check/base/remote
-    - script: make .check/base/settings
-    - script: make .check/base/utils
-    - script: make .check/base/visualization
-    - script: make .check/base/workflow
-    - script: make .check/models/biocro
-    - script: make .check/models/clm45
-    - script: make .check/models/dalec
-    - script: make .check/models/ed
-    - script: make .check/models/fates
-    - script: make .check/models/gday
-    - script: make .check/models/jules
-    - script: make .check/models/linkages
-    - script: make .check/models/lpjguess
-    - script: make .check/models/maat
-    - script: make .check/models/maespa
-    - script: make .check/models/preles
-    - script: make .check/models/sipnet
-    - script: make .check/models/template
-    - script: make .check/modules/allometry
-    - script: make .check/modules/assim.batch
-    - script: make .check/modules/assim.sequential
-    - script: make .check/modules/benchmark
-    - script: make .check/modules/data.atmosphere
-    - script: make .check/modules/data.hydrology
-    - script: make .check/modules/data.land
-    - script: make .check/modules/data.mining
-    - script: make .check/modules/data.remote
-    - script: make .check/modules/emulator
-    - script: make .check/modules/meta.analysis
-    - script: make .check/modules/photosynthesis
-    - script: make .check/modules/priors
-    - script: make .check/modules/rtm
-    - script: make .check/modules/uncertainty
+      script: make .check/base
+    - script: make .check/models
+    - script: make .check/modules
 
     # - stage: integration
     #   # if: branch IN (master, develop, ^release)
