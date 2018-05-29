@@ -156,7 +156,7 @@ jobs:
       r: release
       install: *installscript
       script: skip
-    - r: oldrel
+    - r: 3.4 # "oldrel" is R-3.3, doesn't work with c2d4u
       install: *installscript
       script: skip
     - r: devel
@@ -173,13 +173,13 @@ jobs:
     - r: release
       install: skip
       script: make .check/modules
-    - r: oldrel
+    - r: 3.4
       install: skip
       script: make .check/base
-    - r: oldrel
+    - r: 3.4
       install: skip
       script: make .check/models
-    - r: oldrel
+    - r: 3.4
       install: skip
       script: make .check/modules
     - r: devel
@@ -197,7 +197,7 @@ jobs:
       r: release
       install: skip
       script: ./tests/integration.sh travis || travis_terminate 1;
-    - r: oldrel
+    - r: 3.4
       install: skip
       script: ./tests/integration.sh travis || travis_terminate 1;
     - r: devel
