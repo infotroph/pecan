@@ -5,8 +5,6 @@
 # trusty. They are marked with TRUSTY for easy grepping.
 
 language: r
-r:
-  - 3.4
 
 # TRUSTY: Change version when 16.04 image is available.
 dist: trusty
@@ -105,59 +103,106 @@ services:
 #   - popd
 #   - set +e
 
-install: skip
+# used by setup stage
+# (this list never read directly, just provides a YAML reference to be expanded into jobs.include below)
+_install_helper: &installscript
+  - set -e
+  - pushd $HOME
+  - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
+  - tar zxf sipnet_unk.tar.gz
+  - cd sipnet_unk
+  - make
+  - popd
+  - sudo service postgresql stop
+  - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
+  - echo -n "Waiting for Postgres to start...";
+    until psql -U postgres -c 'select 1' >/dev/null 2>&1;
+      do echo -n ".";
+      sleep 1;
+    done;
+    echo " OK"
+  - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
+  - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
+  - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
+  - psql -q -o /dev/null -U postgres < bety.sql
+  - rm bety.sql
+  - ./scripts/add.models.sh
+  - chmod +x book_source/deploy.sh
+  - chmod +x documentation/tutorials/deploy.sh
+  - echo 'Installing PEcAn packages'
+  # - make document
+  # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
+  # but many dependency compilations seem not parallel-safe.
+  # More debugging needed.
+  - NCPUS=2 make -j1 install
+  - if [[ `git status -s` ]]; then
+      echo "These files were changed by the build process:";
+      git status -s;
+      echo "Have you run devtools::check and commited any updated Roxygen outputs?";
+      exit 1;
+    fi
+  - set +e
 
 stages:
-  - setup
+  - install
   - test
-  # - integration
+  - integration
   # - deploy
 
 jobs:
   include:
-    - stage: setup
+    # installation
+    - stage: install
+      r: release
+      install: *installscript
       script: skip
-      install:
-        - set -e
-        - pushd $HOME
-        - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
-        - tar zxf sipnet_unk.tar.gz
-        - cd sipnet_unk
-        - make
-        - popd
-        - sudo service postgresql stop
-        - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
-        - echo -n "Waiting for Postgres to start...";
-          until psql -U postgres -c 'select 1' >/dev/null 2>&1;
-            do echo -n ".";
-            sleep 1;
-          done;
-          echo " OK"
-        - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
-        - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
-        - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
-        - psql -q -o /dev/null -U postgres < bety.sql
-        - rm bety.sql
-        - ./scripts/add.models.sh
-        - chmod +x book_source/deploy.sh
-        - chmod +x documentation/tutorials/deploy.sh
-        - echo 'Installing PEcAn packages'
-        # - make document
-        # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
-        # but many dependency compilations seem not parallel-safe.
-        # More debugging needed.
-        - NCPUS=2 make -j1 install
-        - if [[ `git status -s` ]]; then
-            echo "These files were changed by the build process:";
-            git status -s;
-            echo "Have you run devtools::check and commited any updated Roxygen outputs?";
-            exit 1;
-          fi
-        - set +e
+    - r: oldrel
+      install: *installscript
+      script: skip
+    - r: devel
+      install: *installscript
+      script: skip
+    # package tests
     - stage: test
+      r: release
+      install: skip
       script: make .check/base
-    - script: make .check/models
-    - script: make .check/modules
+    - r: release
+      install: skip
+      script: make .check/models
+    - r: release
+      install: skip
+      script: make .check/modules
+    - r: oldrel
+      install: skip
+      script: make .check/base
+    - r: oldrel
+      install: skip
+      script: make .check/models
+    - r: oldrel
+      install: skip
+      script: make .check/modules
+    - r: devel
+      install: skip
+      script: make .check/base
+    - r: devel
+      install: skip
+      script: make .check/models
+    - r: devel
+      install: skip
+      script: make .check/modules
+    # integration tests
+    # TODO: run conditionally, e.g. only for some branches?
+    - stage: integration
+      r: release
+      install: skip
+      script: ./tests/integration.sh travis || travis_terminate 1;
+    - r: oldrel
+      install: skip
+      script: ./tests/integration.sh travis || travis_terminate 1;
+    - r: devel
+      install: skip
+      script: ./tests/integration.sh travis || travis_terminate 1;
 
     # - stage: integration
     #   # if: branch IN (master, develop, ^release)
