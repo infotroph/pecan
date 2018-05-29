@@ -165,6 +165,3 @@ $(ALL_PKGS_I) $(ALL_PKGS_C) $(ALL_PKGS_T) $(ALL_PKGS_D): | .install/devtools .in
 .test/%: $$(wildcard %/**/*) $$(wildcard %/*) | $$(@D)
 	$(call test_R_pkg, $(subst .test/,,$@))
 	echo `date` > $@
-
-# .install/base/%: $$(wildcard %/*) 
-$(info $$BASE_I is [${BASE_I}])
