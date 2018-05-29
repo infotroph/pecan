@@ -35,7 +35,11 @@ MODELS_D := $(MODELS:%=.doc/%)
 MODULES_D := $(MODULES:%=.doc/%)
 ALL_PKGS_D := $(BASE_D) $(MODULES_D) $(MODELS_D)
 
-.PHONY: all install check test document
+.PHONY: all install check test document \
+	document_base document_models document_modules \
+	install_base install_models install_modules \
+	test_base test_models test_modules \
+	check_base check_models check_modules \
 
 all: install document
 
@@ -43,6 +47,18 @@ document: $(ALL_PKGS_D) .doc/base/all
 install: $(ALL_PKGS_I) .install/base/all
 check: $(ALL_PKGS_C) .check/base/all
 test: $(ALL_PKGS_T) .test/base/all
+document_base: $(BASE_D)
+document_models: $(MODELS_D)
+document_modules: $(MODULES_D)
+install_base: $(BASE_I)
+install_models: $(MODELS_I)
+install_modules: $(MODULES_I)
+check_base: $(BASE_C)
+check_models: $(MODELS_C)
+check_modules: $(MODULES_C)	
+test_base: $(BASE_T)
+test_models: $(MODELS_T)
+test_modules: $(MODULES_T)	
 
 depends = .doc/$(1) .install/$(1) .check/$(1) .test/$(1)
 
@@ -150,3 +166,5 @@ $(ALL_PKGS_I) $(ALL_PKGS_C) $(ALL_PKGS_T) $(ALL_PKGS_D): | .install/devtools .in
 	$(call test_R_pkg, $(subst .test/,,$@))
 	echo `date` > $@
 
+# .install/base/%: $$(wildcard %/*) 
+$(info $$BASE_I is [${BASE_I}])
