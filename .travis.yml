@@ -6,7 +6,7 @@
 
 language: r
 r:
-  - oldrel
+  - 3.4 # not "oldrel" because that's currently R 3.3 and can't use c2d4u
   - release
   - devel
 
