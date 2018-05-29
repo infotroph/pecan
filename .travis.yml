@@ -166,31 +166,31 @@ jobs:
     - stage: test
       r: release
       install: skip
-      script: make .check/base
+      script: make check_base
     - r: release
       install: skip
-      script: make .check/models
+      script: make check_models
     - r: release
       install: skip
-      script: make .check/modules
+      script: make check_modules
     - r: 3.4
       install: skip
-      script: make .check/base
+      script: make check_base
     - r: 3.4
       install: skip
-      script: make .check/models
+      script: make check_models
     - r: 3.4
       install: skip
-      script: make .check/modules
+      script: make check_modules
     - r: devel
       install: skip
-      script: make .check/base
+      script: make check_base
     - r: devel
       install: skip
-      script: make .check/models
+      script: make check_models
     - r: devel
       install: skip
-      script: make .check/modules
+      script: make check_modules
     # integration tests
     # TODO: run conditionally, e.g. only for some branches?
     - stage: integration
