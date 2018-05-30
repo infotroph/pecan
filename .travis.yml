@@ -90,6 +90,48 @@ services:
 
 install: skip
 
+# not used directly, but defines YAML reference to be inserted below
+_install: &installscript
+  - set -e
+  - pushd $HOME
+  - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
+  - tar zxf sipnet_unk.tar.gz
+  - cd sipnet_unk
+  - make
+  - popd
+  - sudo service postgresql stop
+  - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
+  - echo -n "Waiting for Postgres to start...";
+    until psql -U postgres -c 'select 1' >/dev/null 2>&1;
+      do echo -n ".";
+      sleep 1;
+    done;
+    echo " OK"
+  - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
+  - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
+  - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
+  - psql -q -o /dev/null -U postgres < bety.sql
+  - rm bety.sql
+  - ./scripts/add.models.sh
+  - chmod +x book_source/deploy.sh
+  - chmod +x documentation/tutorials/deploy.sh
+  - echo 'Installing PEcAn packages'
+  # - make document
+  # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
+  # but many dependency compilations seem not parallel-safe.
+  # More debugging needed.
+  - NCPUS=2 make -j1 .install/"$TEST_PKG"
+  # TODO this ought to run after tests too, to ensure they clean up correctly
+  # Maybe as a before_cache step?
+  - if [[ `git status -s` ]]; then
+      echo "These files were changed by the build process:";
+      git status -s;
+      echo "Have you run devtools::check and commited any updated Roxygen outputs?";
+      exit 1;
+    fi
+  - set +e
+
+
 stages:
   - setup
   - test
@@ -99,46 +141,15 @@ stages:
 jobs:
   include:
     - stage: setup
+      r: release
+      install: *installscript
       script: skip
-      install:
-        - set -e
-        - pushd $HOME
-        - curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
-        - tar zxf sipnet_unk.tar.gz
-        - cd sipnet_unk
-        - make
-        - popd
-        - sudo service postgresql stop
-        - docker run --detach --rm --name postgresql --publish 5432:5432 mdillon/postgis:9.6-alpine
-        - echo -n "Waiting for Postgres to start...";
-          until psql -U postgres -c 'select 1' >/dev/null 2>&1;
-            do echo -n ".";
-            sleep 1;
-          done;
-          echo " OK"
-        - psql -q -o /dev/null -U postgres -c "CREATE ROLE BETY WITH LOGIN CREATEDB SUPERUSER CREATEROLE UNENCRYPTED PASSWORD 'bety'";
-        - psql -q -o /dev/null -U postgres -c "CREATE DATABASE bety OWNER bety;"
-        - curl -o bety.sql http://isda.ncsa.illinois.edu/~kooper/PEcAn/data/bety.sql
-        - psql -q -o /dev/null -U postgres < bety.sql
-        - rm bety.sql
-        - ./scripts/add.models.sh
-        - chmod +x book_source/deploy.sh
-        - chmod +x documentation/tutorials/deploy.sh
-        - echo 'Installing PEcAn packages'
-        # - make document
-        # TODO: Would probably be faster to use -j2 NCPUS=1 as for other steps,
-        # but many dependency compilations seem not parallel-safe.
-        # More debugging needed.
-        - NCPUS=2 make -j1 .install/"$TEST_PKG"
-        # TODO this ought to run after tests too, to ensure they clean up correctly
-        # Maybe as a before_cache step?
-        - if [[ `git status -s` ]]; then
-            echo "These files were changed by the build process:";
-            git status -s;
-            echo "Have you run devtools::check and commited any updated Roxygen outputs?";
-            exit 1;
-          fi
-        - set +e
+    - r: 3.4
+      install: *installscript
+      script: skip
+    - r: devel
+      install: *installscript
+      script: skip
     - stage: test
       r: release
       script: make .check/base/all
