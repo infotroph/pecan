@@ -88,21 +88,6 @@ notifications:
 services:
   - docker
 
-# after_script:
-#   - set -e
-#   - if [[ "$TEST_PKG" != "base/all" ]]; then
-#       travis_terminate 0;
-#     fi
-#   - echo 'Building Book'
-#   - pushd book_source
-#   - make
-#   - popd
-#   - echo 'Building Tutorials'
-#   - pushd documentation/tutorials
-#   - make build deploy
-#   - popd
-#   - set +e
-
 # used by setup stage
 # (this list never read directly, just provides a YAML reference to be expanded into jobs.include below)
 _install_helper: &installscript
@@ -135,6 +120,8 @@ _install_helper: &installscript
   # but many dependency compilations seem not parallel-safe.
   # More debugging needed.
   - NCPUS=2 make -j1 install
+  # TODO should run this check after testing too, to ensure correct cleanup
+  # perhaps as a before_cache step?
   - if [[ `git status -s` ]]; then
       echo "These files were changed by the build process:";
       git status -s;
