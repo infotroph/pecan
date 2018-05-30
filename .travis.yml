@@ -5,8 +5,6 @@
 # trusty. They are marked with TRUSTY for easy grepping.
 
 language: r
-r:
-  - 3.4
 
 # TRUSTY: Change version when 16.04 image is available.
 dist: trusty
@@ -142,44 +140,234 @@ jobs:
           fi
         - set +e
     - stage: test
+      r: release
       script: make .check/base/all
-    - script: make .check/base/db
-    - script: make .check/base/logger
-    - script: make .check/base/qaqc
-    - script: make .check/base/remote
-    - script: make .check/base/settings
-    - script: make .check/base/utils
-    - script: make .check/base/visualization
-    - script: make .check/base/workflow
-    - script: make .check/models/biocro
-    - script: make .check/models/clm45
-    - script: make .check/models/dalec
-    - script: make .check/models/ed
-    - script: make .check/models/fates
-    - script: make .check/models/gday
-    - script: make .check/models/jules
-    - script: make .check/models/linkages
-    - script: make .check/models/lpjguess
-    - script: make .check/models/maat
-    - script: make .check/models/maespa
-    - script: make .check/models/preles
-    - script: make .check/models/sipnet
-    - script: make .check/models/template
-    - script: make .check/modules/allometry
-    - script: make .check/modules/assim.batch
-    - script: make .check/modules/assim.sequential
-    - script: make .check/modules/benchmark
-    - script: make .check/modules/data.atmosphere
-    - script: make .check/modules/data.hydrology
-    - script: make .check/modules/data.land
-    - script: make .check/modules/data.mining
-    - script: make .check/modules/data.remote
-    - script: make .check/modules/emulator
-    - script: make .check/modules/meta.analysis
-    - script: make .check/modules/photosynthesis
-    - script: make .check/modules/priors
-    - script: make .check/modules/rtm
-    - script: make .check/modules/uncertainty
+    - r: release
+      script: make .check/base/db
+    - r: release
+      script: make .check/base/logger
+    - r: release
+      script: make .check/base/qaqc
+    - r: release
+      script: make .check/base/remote
+    - r: release
+      script: make .check/base/settings
+    - r: release
+      script: make .check/base/utils
+    - r: release
+      script: make .check/base/visualization
+    - r: release
+      script: make .check/base/workflow
+    - r: release
+      script: make .check/models/biocro
+    - r: release
+      script: make .check/models/clm45
+    - r: release
+      script: make .check/models/dalec
+    - r: release
+      script: make .check/models/ed
+    - r: release
+      script: make .check/models/fates
+    - r: release
+      script: make .check/models/gday
+    - r: release
+      script: make .check/models/jules
+    - r: release
+      script: make .check/models/linkages
+    - r: release
+      script: make .check/models/lpjguess
+    - r: release
+      script: make .check/models/maat
+    - r: release
+      script: make .check/models/maespa
+    - r: release
+      script: make .check/models/preles
+    - r: release
+      script: make .check/models/sipnet
+    - r: release
+      script: make .check/models/template
+    - r: release
+      script: make .check/modules/allometry
+    - r: release
+      script: make .check/modules/assim.batch
+    - r: release
+      script: make .check/modules/assim.sequential
+    - r: release
+      script: make .check/modules/benchmark
+    - r: release
+      script: make .check/modules/data.atmosphere
+    - r: release
+      script: make .check/modules/data.hydrology
+    - r: release
+      script: make .check/modules/data.land
+    - r: release
+      script: make .check/modules/data.mining
+    - r: release
+      script: make .check/modules/data.remote
+    - r: release
+      script: make .check/modules/emulator
+    - r: release
+      script: make .check/modules/meta.analysis
+    - r: release
+      script: make .check/modules/photosynthesis
+    - r: release
+      script: make .check/modules/priors
+    - r: release
+      script: make .check/modules/rtm
+    - r: release
+      script: make .check/modules/uncertainty
+    - r: 3.4
+      script: make .check/base/all
+    - r: 3.4
+      script: make .check/base/db
+    - r: 3.4
+      script: make .check/base/logger
+    - r: 3.4
+      script: make .check/base/qaqc
+    - r: 3.4
+      script: make .check/base/remote
+    - r: 3.4
+      script: make .check/base/settings
+    - r: 3.4
+      script: make .check/base/utils
+    - r: 3.4
+      script: make .check/base/visualization
+    - r: 3.4
+      script: make .check/base/workflow
+    - r: 3.4
+      script: make .check/models/biocro
+    - r: 3.4
+      script: make .check/models/clm45
+    - r: 3.4
+      script: make .check/models/dalec
+    - r: 3.4
+      script: make .check/models/ed
+    - r: 3.4
+      script: make .check/models/fates
+    - r: 3.4
+      script: make .check/models/gday
+    - r: 3.4
+      script: make .check/models/jules
+    - r: 3.4
+      script: make .check/models/linkages
+    - r: 3.4
+      script: make .check/models/lpjguess
+    - r: 3.4
+      script: make .check/models/maat
+    - r: 3.4
+      script: make .check/models/maespa
+    - r: 3.4
+      script: make .check/models/preles
+    - r: 3.4
+      script: make .check/models/sipnet
+    - r: 3.4
+      script: make .check/models/template
+    - r: 3.4
+      script: make .check/modules/allometry
+    - r: 3.4
+      script: make .check/modules/assim.batch
+    - r: 3.4
+      script: make .check/modules/assim.sequential
+    - r: 3.4
+      script: make .check/modules/benchmark
+    - r: 3.4
+      script: make .check/modules/data.atmosphere
+    - r: 3.4
+      script: make .check/modules/data.hydrology
+    - r: 3.4
+      script: make .check/modules/data.land
+    - r: 3.4
+      script: make .check/modules/data.mining
+    - r: 3.4
+      script: make .check/modules/data.remote
+    - r: 3.4
+      script: make .check/modules/emulator
+    - r: 3.4
+      script: make .check/modules/meta.analysis
+    - r: 3.4
+      script: make .check/modules/photosynthesis
+    - r: 3.4
+      script: make .check/modules/priors
+    - r: 3.4
+      script: make .check/modules/rtm
+    - r: 3.4
+      script: make .check/modules/uncertainty
+    - r: devel
+      script: make .check/base/all
+    - r: devel
+      script: make .check/base/db
+    - r: devel
+      script: make .check/base/logger
+    - r: devel
+      script: make .check/base/qaqc
+    - r: devel
+      script: make .check/base/remote
+    - r: devel
+      script: make .check/base/settings
+    - r: devel
+      script: make .check/base/utils
+    - r: devel
+      script: make .check/base/visualization
+    - r: devel
+      script: make .check/base/workflow
+    - r: devel
+      script: make .check/models/biocro
+    - r: devel
+      script: make .check/models/clm45
+    - r: devel
+      script: make .check/models/dalec
+    - r: devel
+      script: make .check/models/ed
+    - r: devel
+      script: make .check/models/fates
+    - r: devel
+      script: make .check/models/gday
+    - r: devel
+      script: make .check/models/jules
+    - r: devel
+      script: make .check/models/linkages
+    - r: devel
+      script: make .check/models/lpjguess
+    - r: devel
+      script: make .check/models/maat
+    - r: devel
+      script: make .check/models/maespa
+    - r: devel
+      script: make .check/models/preles
+    - r: devel
+      script: make .check/models/sipnet
+    - r: devel
+      script: make .check/models/template
+    - r: devel
+      script: make .check/modules/allometry
+    - r: devel
+      script: make .check/modules/assim.batch
+    - r: devel
+      script: make .check/modules/assim.sequential
+    - r: devel
+      script: make .check/modules/benchmark
+    - r: devel
+      script: make .check/modules/data.atmosphere
+    - r: devel
+      script: make .check/modules/data.hydrology
+    - r: devel
+      script: make .check/modules/data.land
+    - r: devel
+      script: make .check/modules/data.mining
+    - r: devel
+      script: make .check/modules/data.remote
+    - r: devel
+      script: make .check/modules/emulator
+    - r: devel
+      script: make .check/modules/meta.analysis
+    - r: devel
+      script: make .check/modules/photosynthesis
+    - r: devel
+      script: make .check/modules/priors
+    - r: devel
+      script: make .check/modules/rtm
+    - r: devel
+      script: make .check/modules/uncertainty
 
     # - stage: integration
     #   # if: branch IN (master, develop, ^release)
