@@ -31,6 +31,7 @@ cache:
   - packages
 
 env:
+  - PGHOST=localhost
   - TEST_PKG=base/all
   - TEST_PKG=base/db
   - TEST_PKG=base/logger
@@ -174,7 +175,7 @@ script:
       echo 'Testing Integration';
       ./tests/integration.sh travis;
     fi
-  - if [[ `git status -s` ]]; then 
+  - if [[ `git status -s` ]]; then
       echo "These files were changed by the build process:";
       git status -s;
       echo "Have you run devtools::check and commited any updated Roxygen outputs?";
