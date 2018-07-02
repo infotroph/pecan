@@ -14,14 +14,6 @@ r:
 dist: trusty
 sudo: required
 
-env:
-  global:
-    # TODO: `make -j2` interleaves output lines from simultaneous processes.
-    # Would be nice to fix by adding `-Otarget`, but not supported in Make 3.x.
-    # When Travis updates, check for Make 4 and add -O if available.
-    - MAKEFLAGS="-j2"
-    - PGHOST=localhost
-
 cache: 
   - directories:
     - .install
@@ -31,45 +23,51 @@ cache:
   - packages
 
 env:
-  - PGHOST=localhost
-  - TEST_PKG=base/all
-  - TEST_PKG=base/db
-  - TEST_PKG=base/logger
-  - TEST_PKG=base/qaqc
-  - TEST_PKG=base/remote
-  - TEST_PKG=base/settings
-  - TEST_PKG=base/utils
-  - TEST_PKG=base/visualization
-  - TEST_PKG=base/workflow
-  - TEST_PKG=models/biocro
-  - TEST_PKG=models/clm45
-  - TEST_PKG=models/dalec
-  - TEST_PKG=models/ed
-  - TEST_PKG=models/fates
-  - TEST_PKG=models/gday
-  - TEST_PKG=models/jules
-  - TEST_PKG=models/linkages
-  - TEST_PKG=models/lpjguess
-  - TEST_PKG=models/maat
-  - TEST_PKG=models/maespa
-  - TEST_PKG=models/preles
-  - TEST_PKG=models/sipnet
-  - TEST_PKG=models/template
-  - TEST_PKG=modules/allometry
-  - TEST_PKG=modules/assim.batch
-  - TEST_PKG=modules/assim.sequential
-  - TEST_PKG=modules/benchmark
-  - TEST_PKG=modules/data.atmosphere
-  - TEST_PKG=modules/data.hydrology
-  - TEST_PKG=modules/data.land
-  - TEST_PKG=modules/data.mining
-  - TEST_PKG=modules/data.remote
-  - TEST_PKG=modules/emulator
-  - TEST_PKG=modules/meta.analysis
-  - TEST_PKG=modules/photosynthesis
-  - TEST_PKG=modules/priors
-  - TEST_PKG=modules/rtm
-  - TEST_PKG=modules/uncertainty
+  global:
+    # TODO: `make -j2` interleaves output lines from simultaneous processes.
+    # Would be nice to fix by adding `-Otarget`, but not supported in Make 3.x.
+    # When Travis updates, check for Make 4 and add -O if available.
+    - MAKEFLAGS="-j2"
+    - PGHOST=localhost
+  matrix:
+    - TEST_PKG=base/all
+    - TEST_PKG=base/db
+    - TEST_PKG=base/logger
+    - TEST_PKG=base/qaqc
+    - TEST_PKG=base/remote
+    - TEST_PKG=base/settings
+    - TEST_PKG=base/utils
+    - TEST_PKG=base/visualization
+    - TEST_PKG=base/workflow
+    - TEST_PKG=models/biocro
+    - TEST_PKG=models/clm45
+    - TEST_PKG=models/dalec
+    - TEST_PKG=models/ed
+    - TEST_PKG=models/fates
+    - TEST_PKG=models/gday
+    - TEST_PKG=models/jules
+    - TEST_PKG=models/linkages
+    - TEST_PKG=models/lpjguess
+    - TEST_PKG=models/maat
+    - TEST_PKG=models/maespa
+    - TEST_PKG=models/preles
+    - TEST_PKG=models/sipnet
+    - TEST_PKG=models/template
+    - TEST_PKG=modules/allometry
+    - TEST_PKG=modules/assim.batch
+    - TEST_PKG=modules/assim.sequential
+    - TEST_PKG=modules/benchmark
+    - TEST_PKG=modules/data.atmosphere
+    - TEST_PKG=modules/data.hydrology
+    - TEST_PKG=modules/data.land
+    - TEST_PKG=modules/data.mining
+    - TEST_PKG=modules/data.remote
+    - TEST_PKG=modules/emulator
+    - TEST_PKG=modules/meta.analysis
+    - TEST_PKG=modules/photosynthesis
+    - TEST_PKG=modules/priors
+    - TEST_PKG=modules/rtm
+    - TEST_PKG=modules/uncertainty
 
 addons:
   apt:
