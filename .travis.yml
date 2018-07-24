@@ -129,6 +129,9 @@ before_script:
 
 script:
   - set -e
+  - sudo du -sh /usr/local/lib/R/site-library
+  - sudo du -sh /usr/local/lib/R
+  - sudo du -sh /home/travis/R/Library
   # - scripts/build.sh --no-git --tests --name travis
   - echo 'Installing PEcAn packages'
   # TODO: Would be nice to add `-Otarget` after `-j` below,
@@ -152,6 +155,9 @@ script:
       echo "Have you run devtools::check and commited any updated Roxygen outputs?";
       exit 1; 
     fi
+  - sudo du -sh /usr/local/lib/R/site-library
+  - sudo du -sh /usr/local/lib/R
+  - sudo du -sh /home/travis/R/Library
   - set +e
 
 after_script:
