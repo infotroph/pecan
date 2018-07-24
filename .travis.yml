@@ -151,31 +151,40 @@ jobs:
       script: skip
     # package tests
     - stage: test
+      name: "Check base, R-release"
       r: release
       install: skip
       script: make check_base
     - r: release
+      name: "Check models, R-release"
       install: skip
       script: make check_models
     - r: release
+      name: "Check modules, R-release"
       install: skip
       script: make check_modules
     - r: 3.4
+      name: "Check base, R-3.4"
       install: skip
       script: make check_base
     - r: 3.4
+      name: "Check models, R-3.4"
       install: skip
       script: make check_models
     - r: 3.4
+      name: "Check modules, R-3.4"
       install: skip
       script: make check_modules
     - r: devel
+      name: "Check base, R-devel"
       install: skip
       script: make check_base
     - r: devel
+      name: "Check models, R-devel"
       install: skip
       script: make check_models
     - r: devel
+      name: "Check modules, R-devel"
       install: skip
       script: make check_modules
     # integration tests
