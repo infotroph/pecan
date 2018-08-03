@@ -114,10 +114,10 @@ before_script:
 
 script:
   - set -e
-  - if [[ -e /usr/lib/R/site-library ]]; then; sudo du -sh /usr/lib/R/site-library; fi
-  - if [[ -e /usr/local/lib/R/site-library ]]; then; sudo du -sh /usr/local/lib/R/site-library; fi
-  - if [[ -e /usr/local/lib/R ]]; then; sudo du -sh /usr/local/lib/R; fi
-  - if [[ -e /home/travis/R/Library ]]; then; sudo du -sh /home/travis/R/Library; fi
+  - if [[ -e /usr/lib/R/site-library ]]; then sudo du -sh /usr/lib/R/site-library; fi
+  - if [[ -e /usr/local/lib/R/site-library ]]; then sudo du -sh /usr/local/lib/R/site-library; fi
+  - if [[ -e /usr/local/lib/R ]]; then sudo du -sh /usr/local/lib/R; fi
+  - if [[ -e /home/travis/R/Library ]]; then sudo du -sh /home/travis/R/Library; fi
   - echo 'Installing PEcAn packages'
   # TODO: Would be nice to add `-Otarget` after `-j` below,
   # but not supported in Make 3.x.
@@ -140,10 +140,10 @@ script:
       echo "Have you run devtools::check and commited any updated Roxygen outputs?";
       exit 1; 
     fi
-  - if [[ -e /usr/lib/R/site-library ]]; then; sudo du -sh /usr/lib/R/site-library; fi
-  - if [[ -e /usr/local/lib/R/site-library ]]; then; sudo du -sh /usr/local/lib/R/site-library; fi
-  - if [[ -e /usr/local/lib/R ]]; then; sudo du -sh /usr/local/lib/R; fi
-  - if [[ -e /home/travis/R/Library ]]; then; sudo du -sh /home/travis/R/Library; fi
+  - if [[ -e /usr/lib/R/site-library ]]; then sudo du -sh /usr/lib/R/site-library; fi
+  - if [[ -e /usr/local/lib/R/site-library ]]; then sudo du -sh /usr/local/lib/R/site-library; fi
+  - if [[ -e /usr/local/lib/R ]]; then sudo du -sh /usr/local/lib/R; fi
+  - if [[ -e /home/travis/R/Library ]]; then sudo du -sh /home/travis/R/Library; fi
   - set +e
 
 after_script:
