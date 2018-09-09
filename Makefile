@@ -126,20 +126,27 @@ doc_R_pkg = ./scripts/time.sh "${1}" Rscript -e "devtools::document('"$(strip $(
 $(ALL_PKGS_I) $(ALL_PKGS_C) $(ALL_PKGS_T) $(ALL_PKGS_D): | .install/devtools .install/roxygen2 .install/testthat
 
 .SECONDEXPANSION:
-.doc/%: $$(wildcard %/**/*) $$(wildcard %/*) | $$(@D)
+
+# NAMESPACE is regenerated each time Roxygen runs,
+# so do not consider it when deciding whether to update package
+dir_prereqs = $(filter-out \
+	$(1)/NAMESPACE, \
+	$(wildcard $(1)/**/*) $(wildcard $(1)/*))
+
+.doc/%: $$(call dir_prereqs,%) | $$(@D)
 	+ $(call depends_R_pkg, $(subst .doc/,,$@))
 	$(call doc_R_pkg, $(subst .doc/,,$@))
 	echo `date` > $@
 
-.install/%: $$(wildcard %/**/*) $$(wildcard %/*) .doc/% | $$(@D)
+.install/%: $$(call dir_prereqs,%) .doc/% | $$(@D)
 	+ $(call install_R_pkg, $(subst .install/,,$@))
 	echo `date` > $@
 
-.check/%: $$(wildcard %/**/*) $$(wildcard %/*) | $$(@D)
+.check/%: $$(call dir_prereqs,%) | $$(@D)
 	+ $(call check_R_pkg, $(subst .check/,,$@))
 	echo `date` > $@
 
-.test/%: $$(wildcard %/**/*) $$(wildcard %/*) | $$(@D)
+.test/%: $$(call dir_prereqs,%) | $$(@D)
 	$(call test_R_pkg, $(subst .test/,,$@))
 	echo `date` > $@
 
