@@ -5,10 +5,7 @@ os: linux
 
 env:
   global:
-    # TODO: `make -j2` interleaves output lines from simultaneous processes.
-    # Would be nice to fix by adding `-Otarget`, but not supported in Make 3.x.
-    # When Travis updates, check for Make 4 and add -O if available.
-    - MAKEFLAGS="-j2"
+    - MAKEFLAGS="-j2 -Otarget" # NB -O requires make >= 4
     - PGHOST=localhost
     - RGL_USE_NULL=TRUE # Keeps RGL from complaining it can't find X11
     - _R_CHECK_LENGTH_1_CONDITION_=true
