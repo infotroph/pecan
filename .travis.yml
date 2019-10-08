@@ -5,7 +5,7 @@ os: linux
 
 env:
   global:
-    - MAKEFLAGS="-j2 -Otarget" # NB -O requires make >= 4
+    - MAKEFLAGS="-Otarget" # NB -O requires GNU make >= 4
     - PGHOST=localhost
     - RGL_USE_NULL=TRUE # Keeps RGL from complaining it can't find X11
     - _R_CHECK_LENGTH_1_CONDITION_=true
