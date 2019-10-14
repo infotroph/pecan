@@ -1,8 +1,8 @@
 Package: PEcAn.MA
 Type: Package
 Title: PEcAn functions used for meta-analysis
-Version: 1.6.0
-Date: 2018-08-20
+Version: 1.7.1
+Date: 2019-09-05
 Authors@R: c(person("Mike","Dietze"),
              person("David","LeBauer"),
              person("Xiaohui", "Feng"),
@@ -28,14 +28,15 @@ Depends:
 Imports:
     coda (>= 0.18),
     PEcAn.logger,
-    PEcAn.settings
+    PEcAn.settings,
+    rjags
 Suggests:
-    rjags,
     testthat (>= 1.0.2),
     PEcAn.priors
 SystemRequirements: JAGS
-License: FreeBSD + file LICENSE
+License: BSD_3_clause + file LICENSE
 Copyright: Authors
 LazyData: FALSE
 Encoding: UTF-8
 RoxygenNote: 6.1.1
+Roxygen: list(markdown = TRUE)
