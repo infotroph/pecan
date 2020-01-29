@@ -19,10 +19,7 @@
 * checking whether package ‘PEcAn.priors’ can be installed ... OK
 * checking installed package size ... OK
 * checking package directory ... OK
-* checking DESCRIPTION meta-information ... NOTE
-Authors@R field gives no person with name and roles.
-Authors@R field gives no person with maintainer role, valid email
-address and non-empty name.
+* checking DESCRIPTION meta-information ... OK
 * checking top-level files ... OK
 * checking for left-over files ... OK
 * checking index information ... OK
@@ -134,4 +131,4 @@ Package has no Sweave vignette sources and no VignetteBuilder field.
 * checking for unstated dependencies in ‘tests’ ... OK
 * checking tests ... SKIPPED
 * DONE
-Status: 5 WARNINGs, 3 NOTEs
+Status: 5 WARNINGs, 2 NOTEs
