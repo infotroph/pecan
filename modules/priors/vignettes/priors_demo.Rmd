@@ -1,6 +1,12 @@
-Generating Priors based on Data and / or Expert knowledge:
-========================================================
-
+---
+title: "Generating Priors based on Data and / or Expert knowledge"
+author: "David LeBauer"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Generating Priors based on Data and / or Expert knowledge}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
 
 Fitting priors to data (point estimates, all grass species in GLOPNET). 
 -------------------------
