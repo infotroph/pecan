@@ -1,3 +1,9 @@
+---
+vignette: >
+  %\VignetteIndexEntry{Modules and outputs}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
 <!--
 #-------------------------------------------------------------------------------
 # Copyright (c) 2012 University of Illinois, NCSA.

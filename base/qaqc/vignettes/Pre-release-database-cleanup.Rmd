@@ -1,6 +1,9 @@
 ---
 title: "Pre Release database Cleanup"
 output: html_notebook
+vignette: >
+  %\VignetteIndexEntry{Pre Release database Cleanup}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 This is an quick script for cleaning up the database. For further documentation see the README.rmd file in the main `qaqc` folder. 

@@ -1,3 +1,9 @@
+---
+vignette: >
+  %\VignetteIndexEntry{LeBauer 2013 analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
 LeBauer 2013 analysis
 ========================================================
 

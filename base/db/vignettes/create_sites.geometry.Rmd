@@ -3,6 +3,9 @@ title: "Create PostGIS polygon"
 author: "David LeBauer"
 date: "7/30/2015"
 output: html_document
+vignette: >
+  %\VignetteIndexEntry{Create PostGIS polygon}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 Code used to insert a polygon for Champaign County into a PostGIS geometry column.

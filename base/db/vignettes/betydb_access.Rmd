@@ -3,6 +3,9 @@ title: "BETYdb Access"
 author: "David LeBauer"
 date: "7/30/2015"
 output: html_document
+vignette: >
+  %\VignetteIndexEntry{BETYdb Access}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 Ways to Access BETYdb from R

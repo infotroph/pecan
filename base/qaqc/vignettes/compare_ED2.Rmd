@@ -1,3 +1,9 @@
+---
+vignette: >
+  %\VignetteIndexEntry{compare ED2}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
 Title
 ============
 

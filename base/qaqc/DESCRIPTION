@@ -13,9 +13,11 @@ Depends:
 Imports:
     PEcAn.logger
 Suggests:
+	knitr,
 	testthat
 License: BSD_3_clause + file LICENSE
 Copyright: Authors
+VignetteBuilder: knitr
 LazyLoad: yes
 LazyData: FALSE
 Encoding: UTF-8
