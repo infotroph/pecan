@@ -1,5 +1,11 @@
-Map
-========================================================
+---
+title: Map
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Map}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
 
 ```{r}
 require(raster)
