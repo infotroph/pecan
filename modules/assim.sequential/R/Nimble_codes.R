@@ -37,27 +37,6 @@ load_nimble <- function(){
       return(y)
     })
   
-  rwtmnorm <<- nimbleFunction(
-    run = function(n = integer(0), mean = double(1),
-                   prec = double(2), wt = double(0)){
-      returnType(double(1))
-      if(n != 1) nimPrint("rwtmnorm only allows n = 1; using n = 1.")
-      Prob <- rmnorm_chol(n=1, mean, chol(prec), prec_param = TRUE) * wt
-      return(Prob)
-    }
-  )
-  
-  dwtmnorm <<- nimbleFunction(
-    run = function(x = double(1), mean = double(1), prec = double(2),
-                   wt = double(0), log = integer(0, default=0)){
-      returnType(double(0))
-      
-      logProb <- dmnorm_chol(x = x, mean = mean, cholesky = chol(prec), 
-                             prec_param = TRUE, log = TRUE) * wt
-      
-      if(log){return((logProb))} else {return((exp(logProb)))}
-    }
-  )
   
   registerDistributions(list(dwtmnorm = list(BUGSdist = "dwtmnorm(mean, prec, wt)", 
                                              types = c('value = double(1)','mean = double(1)', 'prec = double(2)', 'wt = double(0)'))))
@@ -248,3 +227,31 @@ load_nimble <- function(){
   
   
 }
+
+
+#' @export
+rwtmnorm <- nimbleFunction(
+  run = function(n = integer(0), mean = double(1),
+                 prec = double(2), wt = double(0)) {
+    returnType(double(1))
+    if (n != 1) nimPrint("rwtmnorm only allows n = 1; using n = 1.")
+    Prob <- rmnorm_chol(n = 1, mean, chol(prec), prec_param = TRUE) * wt
+    return(Prob)
+  },
+  where = nimble::getLoadingNamespace()
+)
+
+
+#' @export
+dwtmnorm <- nimbleFunction(
+  run = function(x = double(1), mean = double(1), prec = double(2),
+                 wt = double(0), log = integer(0, default = 0)) {
+    returnType(double(0))
+
+    logProb <- dmnorm_chol(x = x, mean = mean, cholesky = chol(prec),
+                           prec_param = TRUE, log = TRUE) * wt
+
+    if (log) { return((logProb)) } else { return((exp(logProb))) }
+  },
+  where = nimble::getLoadingNamespace()
+)
