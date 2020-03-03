@@ -3,18 +3,30 @@
 # Added by CKB to avoid setting up a full SDA when checking that his changes
 # kept dwtmnorm usable inside the assim.sequential package namespace
 #
+# Nothing in this file is exported. Delete it when testing is done.
+
+
+
+# Nimble code called inside run_dw_test.
+# Since this is defined outside a function but not exported,
+# it's visible everywhere inside the PEcAn.assim.sequential
+# package namespace but nowhere outside it.
+dw_test <- nimbleCode({
+  y[1:2] ~ dwtmnorm(mean = muf[1:2], prec = pf[1:2,1:2], wt = 1)
+})
+
+
+
+# Function to call a nimble model that uses dwtmnorm but is otherwise useless
+#
 # Usage:
 # library(nimble)
 # library(PEcAn.assim.sequential)
 # PEcAn.assim.sequential:::run_dw_test(10)
 #
-# This function isn't exported and should be deleted after testing is done
 #
 run_dw_test <- function(niter) {
 
-  dw_test <- nimbleCode({
-    y[1:2] ~ dwtmnorm(mean = muf[1:2], prec = pf[1:2,1:2], wt = 1)
-  })
   dw_test_pred <- nimbleModel(dw_test,
                                   data = list(muf = c(10, 20),
                                               pf = diag(2) * 1/5),
