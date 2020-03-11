@@ -46,9 +46,8 @@ set -e
     travis_time_start "install_sipnet" "Installing SIPNET for testing"
 
     cd ${HOME}
-    curl -o sipnet_unk.tar.gz http://isda.ncsa.illinois.edu/~kooper/EBI/sipnet_unk.tar.gz
-    tar zxf sipnet_unk.tar.gz
-    cd sipnet_unk
+    curl -L https://github.com/PecanProject/sipnet/archive/r136.tar.gz | tar xz
+    cd sipnet-r136
     make
     ls -l sipnet
 
