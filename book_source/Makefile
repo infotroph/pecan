@@ -12,6 +12,8 @@ bkdcheck:
 # the `book_source/extfiles` folder. That way, `extfiles/image.jpg`
 # works in both the original Rmd file and the compiled book.
 #
+
+
 # Any other demos outside the `book_source` folder relying on external
 # files will have to use a similar hack. The convention is to stick
 # any external files into the `extfiles` folder in the same directory
