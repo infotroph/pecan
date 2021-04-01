@@ -5,8 +5,14 @@ pkg <- arg[1]
 
 log_level <- Sys.getenv("LOGLEVEL", unset = NA)
 die_level <- Sys.getenv("DIELEVEL", unset = NA)
-redocument <- as.logical(Sys.getenv("REBUILD_DOCS", unset = NA))
+redocument <- as.logical(Sys.getenv("REBUILD_DOCS", unset = TRUE))
 runtests <- as.logical(Sys.getenv("RUN_TESTS", unset = TRUE))
+
+Sys.setenv(
+    `_R_CHECK_CRAN_INCOMING_REMOTE_` = FALSE,
+    `_R_CHECK_CRAN_INCOMING_` = FALSE,
+    `_R_CHECK_FORCE_SUGGESTS_` = FALSE,
+    `NOT_CRAN` = "true")
 
 old_file <- file.path(pkg, "tests", "Rcheck_reference.log")
 if (file.exists(old_file)) {
@@ -25,15 +31,21 @@ die_level <- match.arg(die_level, c("never", "error", "warning", "note"))
 log_warn <- log_level %in% c("warning", "note", "all")
 log_notes <- log_level %in% c("note", "all")
 
-# should test se run
+args <- c("--as-cran", "--timings", "--no-manual")
+
 if (!runtests) {
-    args <- c("--no-tests", "--timings")
-} else {
-    args <- c("--timings")
+    args <- c("--no-tests", args)
 }
 
-chk <- devtools::check(pkg, args = args, quiet = TRUE,
-    error_on = die_level, document = redocument)
+if (redocument) {
+    devtools::document(pkg, quiet = TRUE)
+}
+
+chk <- rcmdcheck::rcmdcheck(
+    path = pkg,
+    quiet = TRUE,
+    args = args,
+    error_on = die_level)
 
 errors <- chk[["errors"]]
 n_errors <- length(errors)
