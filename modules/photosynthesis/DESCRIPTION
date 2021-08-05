@@ -26,17 +26,11 @@ Imports:
     stats
 Suggests:
     knitr,
-    rmarkdown,
-    markdown
+    rmarkdown
 SystemRequirements: JAGS (>=2.2.0)
 License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyLoad: yes
 LazyData: FALSE
-Collate:
-    fitA.R
-    Licor.QC.R
-    plots.R
 Encoding: UTF-8
 RoxygenNote: 7.0.2
-VignetteBuilder: knitr
+VignetteBuilder: knitr, rmarkdown
