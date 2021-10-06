@@ -176,13 +176,13 @@ get.parameter.samples <- function(settings,
     PEcAn.logger::logger.info("\n Selected Quantiles: ", vecpaste(round(quantiles, 3)))
     
     ### Generate list of sample quantiles for SA run
-    sa.samples <- get.sa.sample.list(pft = trait.samples, env = env.samples, 
+    sa.samples <- get_sa_sample_list(pft = trait.samples, env = env.samples,
                                      quantiles = quantiles)
   }
   if ("ensemble" %in% names(settings)) {
     if (settings$ensemble$size == 1) {
       ## run at median if only one run in ensemble
-      ensemble.samples <- get.sa.sample.list(pft = trait.samples, env = env.samples, 
+      ensemble.samples <- get_sa_sample_list(pft = trait.samples, env = env.samples,
                                              quantiles = 0.5)
       #if it's not there it's one probably
       if (is.null(settings$ensemble$size)) settings$ensemble$size<-1

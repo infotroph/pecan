@@ -38,54 +38,6 @@ get.quantiles <- function(quantiles.tag) {
 } # get.quantiles
 
 
-##' get sensitivity samples as a list
-##'
-##' @param pft Plant Functional Type
-##' @param env 
-##' @param quantiles quantiles at which to obtain samples from parameter for
-##' sensitivity analysis
-##' @export
-##' @return sa.sample.list
-get.sa.sample.list <- function(pft, env, quantiles) {
-  sa.sample.list <- list()
-  for (i in seq_along(pft)) {
-    sa.sample.list[[i]] <- get.sa.samples(pft[[i]], quantiles)
-  }
-  sa.sample.list[[length(pft) + 1]] <- get.sa.samples(env, quantiles)
-  names(sa.sample.list) <- c(names(pft), "env")
-  return(sa.sample.list)
-} # get.sa.sample.list
-
-
-##' Get sensitivity analysis samples
-##'
-##' Samples parameters for a model run at specified quantiles.
-##'
-##' Samples from long (>2000) vectors that represent random samples from a
-##'   trait distribution.
-##' Samples are either the MCMC chains output from the Bayesian meta-analysis
-##'   or are randomly sampled from the closed-form distribution of the
-##'   parameter probability distribution function.
-##' The list is indexed first by trait, then by quantile.
-##'
-##' @param samples random samples from trait distribution
-##' @param quantiles list of quantiles to at which to sample,
-##'   set in settings file
-##' @return a list of lists representing quantile values of trait distributions
-##' @export
-##' @author David LeBauer
-get.sa.samples <- function(samples, quantiles) {
-  sa.samples <- data.frame()
-  for (trait in names(samples)) {
-    for (quantile in quantiles) {
-      sa.samples[as.character(round(quantile * 100, 3)), trait] <- 
-        quantile(samples[[trait]], quantile)
-    }
-  }
-  return(sa.samples)
-} # get.sa.samples
-
-
 ##' checks that met2model function exists
 ##'
 ##' Checks if `met2model.<model>` exists for a particular model
