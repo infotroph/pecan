@@ -82,7 +82,7 @@ run.ensemble.analysis <- function(settings, plot.timeseries = NA, ensemble.id = 
         ensemble.id = ensemble.id, variable = variable.fn,
         start.year = start.year, end.year = end.year)
       
-      load(fname)
+      ensemble.output <- PEcAn.utils::load_local(fname)[["ensemble.output"]]
       
       my.dat = unlist(ensemble.output)
       if(is.null(my.dat) | all(is.na(my.dat))){
@@ -240,14 +240,14 @@ read.ensemble.ts <- function(settings, ensemble.id = NULL, variable = NULL,
   if (!file.exists(fname)) {
     PEcAn.logger::logger.severe("No ensemble samples file found!")
   }
-  load(fname)
+  samps <- PEcAn.utils::load_local(fname)
   
   # For backwards compatibility, define ens.run.ids if not just loaded
-  if (!exists("ens.run.ids")) {
-    ens.run.ids <- runs.samples$ens
+  if (is.null(samps[["ens.run.ids"]])) {
+    samps[["ens.run.ids"]] <- samps[["runs.samples"]]$ens
   }
   
-  ensemble.size <- nrow(ens.run.ids)
+  ensemble.size <- nrow(samps[["ens.run.ids"]])
   
   expr <- variable.ens$expression
   variables <- variable.ens$variables
@@ -255,8 +255,8 @@ read.ensemble.ts <- function(settings, ensemble.id = NULL, variable = NULL,
   ## read ensemble output
   # Leaving list output even though only one variable allowed for now. Will improve backwards compatibility and maybe help in the future.
   ensemble.ts <- vector("list", length(variables)) 
-  for(row in rownames(ens.run.ids)) {
-    run.id <- ens.run.ids[row, 'id']
+  for(row in rownames(samps[["ens.run.ids"]])) {
+    run.id <- samps[["ens.run.ids"]][row, 'id']
     print(run.id)
     
     for(var in seq_along(variables)){

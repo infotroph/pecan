@@ -51,17 +51,28 @@ get.results <- function(settings, sa.ensemble.id = NULL, ens.ensemble.id = NULL,
     if (!file.exists(fname)) {
       PEcAn.logger::logger.severe("No sensitivity analysis samples file found!")
     }
-    load(fname)
+    sa_data <- PEcAn.utils::load_local(fname)
     
     # For backwards compatibility, define some variables if not just loaded
-    if (!exists("pft.names")) {
-      pft.names <- names(trait.samples)
+    if (is.null(sa_data[["pft.names"]])) {
+      sa_data[["pft.names"]] <- names(sa_data[["trait.samples"]])
     }
-    if (!exists("trait.names")) {
-      trait.names <- lapply(trait.samples, names)
+    if (is.null(sa_data[["trait.names"]])) {
+      sa_data[["trait.names"]] <- lapply(sa_data[["trait.samples"]], names)
     }
-    if (!exists("sa.run.ids")) {
-      sa.run.ids <- runs.samples$sa
+    if (is.null(sa_data[["sa.run.ids"]])) {
+      sa_data[["sa.run.ids"]] <- sa_data[["runs.samples"]]$sa
+    }
+
+    if (is.null(sa.ensemble.id)) {
+      sa.ensemble.id <- sa_data[["sa.ensemble.id"]]
+    }
+    if (sa.ensemble.id != sa_data[["sa.ensemble.id"]]) {
+      PEcAn.logger::logger.warn(
+        "sensitivity ensemble ID read from file (",
+        sa_data[["sa.ensemble.id"]],
+        ") does not match sensitivity ensemble ID expected from settings (",
+        sa.ensemble.id, ")")
     }
     
     # Set variable and years. Use args first, then settings, then defaults/error
@@ -102,9 +113,9 @@ get.results <- function(settings, sa.ensemble.id = NULL, ens.ensemble.id = NULL,
         variable.sa <- variables$variable.eqn
         variable.fn <- variables$variable.drv
         
-        for(pft.name in pft.names){
-          quantiles <- rownames(sa.samples[[pft.name]])    
-          traits <- trait.names[[pft.name]]
+        for (pft.name in sa_data[["pft.names"]]) {
+          quantiles <- rownames(sa_data[["sa.samples"]][[pft.name]])
+          traits <- sa_data[["trait.names"]][[pft.name]]
           
           # when there is variable-per pft in the outputs, check for the tag for deciding SA per pft
           per.pft <- ifelse(!is.null(settings$sensitivity.analysis$perpft), 
@@ -118,7 +129,7 @@ get.results <- function(settings, sa.ensemble.id = NULL, ens.ensemble.id = NULL,
             start.year = start.year.sa,
             end.year = end.year.sa,
             variable = variable.sa,
-            sa.run.ids = sa.run.ids,
+            sa.run.ids = sa_data[["sa.run.ids"]],
             per.pft = per.pft)
         }
         
@@ -157,17 +168,28 @@ get.results <- function(settings, sa.ensemble.id = NULL, ens.ensemble.id = NULL,
     if (!file.exists(fname)) {
       PEcAn.logger::logger.severe("No ensemble samples file found!")
     }
-    load(fname)
+    ens_data <- PEcAn.utils::load_local(fname)
     
     # For backwards compatibility, define some variables if not just loaded
-    if (!exists("pft.names")) {
-      pft.names <- names(trait.samples)
+    if (is.null(ens_data[["pft.names"]])) {
+      ens_data[["pft.names"]] <- names(ens_data[["trait.samples"]])
     }
-    if (!exists("trait.names")) {
-      trait.names <- lapply(trait.samples, names)
+    if (is.null(ens_data[["trait.names"]])) {
+      ens_data[["trait.names"]] <- lapply(ens_data[["trait.samples"]], names)
     }
-    if (!exists("ens.run.ids")) {
-      ens.run.ids <- runs.samples$ens
+    if (is.null(ens_data[["ens.run.ids"]])) {
+      ens_data[["ens.run.ids"]] <- ens_data[["runs.samples"]]$ens
+    }
+
+    if (is.null(ens.ensemble.id)) {
+      ens.ensemble.id <- ens_data[["ens.ensemble.id"]]
+    }
+    if (ens.ensemble.id != sa_data[["sa.ensemble.id"]]) {
+      PEcAn.logger::logger.warn(
+        "ensemble ID read from file (",
+        ens_data[["ens.ensemble.id"]],
+        ") does not match ensemble ID expected from settings (",
+        ens.ensemble.id, ")")
     }
     
     # Set variable and years. Use args first, then settings, then defaults/error
@@ -219,7 +241,7 @@ get.results <- function(settings, sa.ensemble.id = NULL, ens.ensemble.id = NULL,
           start.year = start.year.ens, 
           end.year = end.year.ens, 
           variable = variable.ens,
-          ens.run.ids = ens.run.ids
+          ens.run.ids = ens_data[["ens.run.ids"]]
         )
         
         # Save ensemble output

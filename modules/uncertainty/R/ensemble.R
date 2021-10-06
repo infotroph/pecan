@@ -29,8 +29,8 @@ read.ensemble.output <- function(ensemble.size, pecandir, outdir, start.year, en
   if (is.null(ens.run.ids)) {
     samples.file <- file.path(pecandir, "samples.Rdata")
     if (file.exists(samples.file)) {
-      load(samples.file)
-      ens.run.ids <- runs.samples$ensemble
+      ens.run.ids <- PEcAn.utils::load_local(
+        samples.file)[["runs.samples"]]$ensemble
     } else {
       stop(samples.file, "not found required by read.ensemble.output")
     }

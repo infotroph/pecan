@@ -54,7 +54,7 @@ run.sensitivity.analysis <- function(settings,plot=TRUE, ensemble.id=NULL, varia
         # Have to load samples.Rdata for the traits. But can overwrite the run ids if a sensitivity analysis ensemble id provided. samples.Rdata always has only the most recent ensembles for both ensemble and sensitivity runs.
         fname <- file.path(settings$outdir, 'samples.Rdata')
         if(!file.exists(fname)) PEcAn.logger::logger.severe("No samples.Rdata file found!")
-        load(fname)
+        samps <- PEcAn.utils::load_local(fname)
         
         # Can specify ensemble ids manually. If not, look in settings. If none there, will use the most recent, which was loaded with samples.Rdata
         if(!is.null(ensemble.id)) {
@@ -67,12 +67,23 @@ run.sensitivity.analysis <- function(settings,plot=TRUE, ensemble.id=NULL, varia
         } else {
           ensemble.id <- NULL
         }
-        if(file.exists(fname)) load(fname)
+        if(file.exists(fname)) {
+          sa_samps <- PEcAn.utils::load_local(fname)
+          for (name in names(sa_samps)) {
+            samps[[name]] <- sa_samps[[name]]
+          }
+        }
         
         # For backwards compatibility, define some variables if not just loaded
-        if(!exists("pft.names"))    pft.names <- names(trait.samples)
-        if(!exists("trait.names"))  trait.names <- lapply(trait.samples, names)
-        if(!exists("sa.run.ids"))   sa.run.ids <- runs.samples$sa
+        if(is.null(samps[["pft.names"]])) {
+          samps[["pft.names"]] <- names(samps[["trait.samples"]])
+        }
+        if(is.null(samps[["trait.names"]])) {
+          samps[["trait.names"]] <- lapply(samps[["trait.samples"]], names)
+        }
+        if(is.null(samps[["sa.run.ids"]])) {
+          samps[["sa.run.ids"]] <- samps[["runs.samples"]]$sa
+        }
         
         ### Load parsed model results
         variables <- PEcAn.utils::convert.expr(variable)
@@ -82,13 +93,14 @@ run.sensitivity.analysis <- function(settings,plot=TRUE, ensemble.id=NULL, varia
           settings, "sensitivity.output", "Rdata", all.var.yr = FALSE,
           ensemble.id = ensemble.id, variable = variable.fn,
           start.year = start.year, end.year = end.year)
-        load(fname)
+        sensitivity.output <- PEcAn.utils::load_local(
+          fname)[["sensitivity.output"]]
         
         ### Generate SA output and diagnostic plots
         sensitivity.results <- list()
         for(pft in settings$pfts){
-          traits <- trait.names[[pft$name]]
-          quantiles.str <- rownames(sa.samples[[pft$name]])
+          traits <- samps[["trait.names"]][[pft$name]]
+          quantiles.str <- rownames(samps[["sa.samples"]][[pft$name]])
           quantiles.str <- quantiles.str[which(quantiles.str != '50')]
           quantiles <- as.numeric(quantiles.str)/100
           
@@ -98,7 +110,11 @@ run.sensitivity.analysis <- function(settings,plot=TRUE, ensemble.id=NULL, varia
             ignore.case = TRUE)
           if(any(C.units)){
             for(x in which(C.units)) {
-              trait.samples[[pft$name]][[x]] <- udunits2::ud.convert(trait.samples[[pft$name]][[x]], "degC", "K")
+              samps[["trait.samples"]][[pft$name]][[x]] <-
+                udunits2::ud.convert(
+                  samps[["trait.samples"]][[pft$name]][[x]],
+                  "degC",
+                  "K")
             }
           }
           
@@ -113,8 +129,8 @@ run.sensitivity.analysis <- function(settings,plot=TRUE, ensemble.id=NULL, varia
           
           ### Gather SA results
           sensitivity.results[[pft$name]] <- sensitivity.analysis(
-            trait.samples = trait.samples[[pft$name]][traits],
-            sa.samples = sa.samples[[pft$name]][ ,traits, drop=FALSE],
+            trait.samples = samps[["trait.samples"]][[pft$name]][traits],
+            sa.samples = samps[["sa.samples"]][[pft$name]][ ,traits, drop=FALSE],
             sa.output = sensitivity.output[[pft$name]][ ,traits, drop=FALSE],
             outdir = pft$outdir)
           

@@ -57,22 +57,26 @@ get.parameter.samples <- function(settings,
   ## Load PFT priors and posteriors
   for (i in seq_along(pft.names)) {
     
-    rm(prior.distns, post.distns, trait.mcmc)
+    if (exists("distns")) rm(distns)
+    if (exists("prior.distns")) rm(prior.distns)
+    if (exists("trait.mcmc")) rm(trait.mcmc)
     ## Load posteriors
     if (!is.na(posterior.files[i])) {
       # Load specified file
-      load(posterior.files[i])
-      if (!exists("prior.distns") & exists("post.distns")) {
-        prior.distns <- post.distns
+      distns <- PEcAn.utils::load_local(posterior.files[i])
+      if (exists("prior.distns", distns)) {
+        prior.distns <- distns[["prior.distns"]]
+      } else  if (exists("post.distns", distns)) {
+        prior.distns <- distns[["post.distns"]]
       }
     } else {
       # Default to most recent posterior in the workflow, or the prior if there is none
       fname <- file.path(outdirs[i], "post.distns.Rdata")
       if (file.exists(fname)) {
-        load(fname)
-        prior.distns <- post.distns
+        prior.distns <- PEcAn.utils::load_local(fname)[["post.distns"]]
       } else {
-        load(file.path(outdirs[i], "prior.distns.Rdata"))
+        prior.distns <- PEcAn.utils::load_local(
+          file.path(outdirs[i], "prior.distns.Rdata"))[["prior.distns"]]
       }
     }
     
@@ -88,7 +92,7 @@ get.parameter.samples <- function(settings,
       if (length(tid) > 0) {
         trait.mcmc.file <- file.path(files$file_path[tid], files$file_name[tid])
         ma.results <- TRUE
-        load(trait.mcmc.file)
+        trait.mcmc <- PEcAn.utils::load_local(trait.mcmc.file)[["trait.mcmc"]]
         
         # PDA samples are fitted together, to preserve correlations downstream let workflow know they should go together
         if(grepl("mcmc.pda", trait.mcmc.file)) independent <- FALSE 
@@ -102,7 +106,8 @@ get.parameter.samples <- function(settings,
     }else if ("trait.mcmc.Rdata" %in% dir(unlist(outdirs[i]))) {
       PEcAn.logger::logger.info("Defaulting to trait.mcmc file in the pft directory.")
       ma.results <- TRUE
-      load(file.path(outdirs[i], "trait.mcmc.Rdata"))
+      trait.mcmc <- PEcAn.utils::load_local(
+        file.path(outdirs[i], "trait.mcmc.Rdata"))[["trait.mcmc"]]
     } else {
       ma.results <- FALSE
     }
@@ -113,7 +118,7 @@ get.parameter.samples <- function(settings,
     ### Trim all chains to shortest mcmc chain, else 20000 samples
     priors <- rownames(prior.distns)
     
-    if (exists("trait.mcmc")) {
+    if (exists("trait.mcmc") && !is.null(trait.mcmc)) {
       param.names[[i]] <- names(trait.mcmc)
       names(param.names)[i] <- pft.name
       
