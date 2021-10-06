@@ -37,7 +37,11 @@ get.parameter.samples <- function(settings,
     if(!is.null(settings$pfts[[i.pft]]$outdir)){
       outdirs[i.pft] <- settings$pfts[[i.pft]]$outdir
     } else { 
-      outdirs[i.pft] <- unique(dbfile.check(type = "Posterior",container.id = settings$pfts[[i.pft]]$posteriorid,con=con)$file_path)
+      outdirs[i.pft] <- unique(
+        PEcAn.DB::dbfile.check(
+          type = "Posterior",
+          container.id = settings$pfts[[i.pft]]$posteriorid,
+          con = con)$file_path)
     }
     
   }  ### End of for loop to extract pft names
@@ -74,9 +78,12 @@ get.parameter.samples <- function(settings,
     
     ### Load trait mcmc data (if exists, either from MA or PDA)
     if (!is.null(settings$pfts[[i]]$posteriorid) && !inherits(con, "try-error")) {# first check if there are any files associated with posterior ids
-      files <- PEcAn.DB::dbfile.check("Posterior",
-                                      settings$pfts[[i]]$posteriorid, 
-                                      con, settings$host$name, return.all = TRUE)
+      files <- PEcAn.DB::dbfile.check(
+        "Posterior",
+        settings$pfts[[i]]$posteriorid,
+        con,
+        settings$host$name,
+        return.all = TRUE)
       tid <- grep("trait.mcmc.*Rdata", files$file_name)
       if (length(tid) > 0) {
         trait.mcmc.file <- file.path(files$file_path[tid], files$file_name[tid])
@@ -153,7 +160,10 @@ get.parameter.samples <- function(settings,
       if (prior %in% param.names[[i]]) {
         samples <- trait.mcmc[[prior]] %>% purrr::map(~ .x[,'beta.o']) %>% unlist() %>% as.matrix()
       } else {
-        samples <- PEcAn.priors::get.sample(prior.distns[prior, ], samples.num, q_samples[ , priors==prior])
+        samples <- PEcAn.priors::get.sample(
+          prior.distns[prior, ],
+          samples.num,
+          q_samples[ , priors==prior])
       }
       trait.samples[[pft.name]][[prior]] <- samples
     }
@@ -168,12 +178,14 @@ get.parameter.samples <- function(settings,
   if ("sensitivity.analysis" %in% names(settings)) {
     
     ### Get info on the quantiles to be run in the sensitivity analysis (if requested)
-    quantiles <- get.quantiles(settings$sensitivity.analysis$quantiles)
+    quantiles <- PEcAn.utils::get.quantiles(settings$sensitivity.analysis$quantiles)
     ### Get info on the years to run the sensitivity analysis (if requested)
     sa.years <- data.frame(sa.start = settings$sensitivity.analysis$start.year, 
                            sa.end = settings$sensitivity.analysis$end.year)
     
-    PEcAn.logger::logger.info("\n Selected Quantiles: ", vecpaste(round(quantiles, 3)))
+    PEcAn.logger::logger.info(
+      "\n Selected Quantiles: ",
+      PEcAn.utils::vecpaste(round(quantiles, 3)))
     
     ### Generate list of sample quantiles for SA run
     sa.samples <- get_sa_sample_list(pft = trait.samples, env = env.samples,

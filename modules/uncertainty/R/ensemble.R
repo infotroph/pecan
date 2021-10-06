@@ -205,6 +205,7 @@ get.ensemble.samples <- function(ensemble.size, pft.samples, env.samples,
 ##' new.params also has similar structure to ensemble.samples which is sent as an argument.
 ##'
 ##' @importFrom dplyr %>%
+##' @importFrom rlang .data
 ##' @export
 ##' @author David LeBauer, Carl Davidson, Hamze Dokoohaki
 write.ensemble.configs <- function(defaults, ensemble.samples, settings, model, 
@@ -264,11 +265,11 @@ write.ensemble.configs <- function(defaults, ensemble.samples, settings, model,
     if (!is.null(con)){
       #-- lets first find out what tags are required for this model
       required_tags <- dplyr::tbl(con, 'models') %>%
-        dplyr::filter(id == !!as.numeric(settings$model$id)) %>%
+        dplyr::filter(.data$id == !!as.numeric(settings$model$id)) %>%
         dplyr::inner_join(dplyr::tbl(con, "modeltypes_formats"), by = c('modeltype_id')) %>%
         dplyr::collect() %>%
-        dplyr::filter(required == TRUE) %>%
-        dplyr::pull(tag)
+        dplyr::filter(.data$required == TRUE) %>%
+        dplyr::pull(.data$tag)
       
     }else{
       required_tags<-c("met","parameters")
@@ -306,7 +307,7 @@ write.ensemble.configs <- function(defaults, ensemble.samples, settings, model,
     # Let's find the PFT based on site location, if it was found I will subset the ensemble.samples otherwise we're not affecting anything    
     if(!is.null(con)){
       Pft_Site_df <- dplyr::tbl(con, "sites_cultivars")%>%
-        dplyr::filter(site_id == !!settings$run$site$id) %>%
+        dplyr::filter(.data$site_id == !!settings$run$site$id) %>%
         dplyr::inner_join(dplyr::tbl(con, "cultivars_pfts"), by = "cultivar_id") %>%
         dplyr::inner_join(dplyr::tbl(con, "pfts"), by = c("pft_id" = "id")) %>%
         dplyr::collect() 
@@ -324,7 +325,7 @@ write.ensemble.configs <- function(defaults, ensemble.samples, settings, model,
     if (!is.null(site.pfts.vec)) {
       # find the name of pfts defined in the body of pecan.xml
       defined.pfts <-
-        settings$pfts %>% purrr::map('name') %>% unlist %>% as.character
+        settings$pfts %>% purrr::map('name') %>% unlist() %>% as.character()
       # subset ensemble samples based on the pfts that are specified in the site and they are also sampled from.
       if (length(which(site.pfts.vec %in% defined.pfts)) > 0)
         ensemble.samples <-
@@ -343,9 +344,15 @@ write.ensemble.configs <- function(defaults, ensemble.samples, settings, model,
     }
     
     # if no ensemble piece was in the xml I replicate n times the first element in params
-    if ( is.null(samp$parameters) )            samples$parameters$samples <- ensemble.samples %>% purrr::map(~.x[rep(1, settings$ensemble$size) , ])
+    if ( is.null(samp$parameters) ) {
+      samples$parameters$samples <- purrr::map(
+        ensemble.samples,
+        ~.x[rep(1, settings$ensemble$size), ])
+    }
     # This where we handle the parameters - ensemble.samples is already generated in run.write.config and it's sent to this function as arg - 
-    if ( is.null(samples$parameters$samples) ) samples$parameters$samples <- ensemble.samples
+    if ( is.null(samples$parameters$samples) ) {
+      samples$parameters$samples <- ensemble.samples
+    }
     #------------------------End of generating ensembles-----------------------------------
     # find all inputs that have an id
     inputs <- names(settings$run$inputs)
@@ -443,10 +450,17 @@ write.ensemble.configs <- function(defaults, ensemble.samples, settings, model,
     
     if(!is.null(site.pfts.vec)){
       # find the name of pfts defined in the body of pecan.xml
-      defined.pfts <- settings$pfts %>% purrr::map('name') %>% unlist %>% as.character
+      defined.pfts <- settings$pfts %>%
+        purrr::map('name') %>%
+        unlist() %>%
+        as.character()
       # subset ensemble samples based on the pfts that are specified in the site and they are also sampled from.
       if (length(which(site.pfts.vec %in% defined.pfts)) > 0 )
-        new.params <- new.params %>% map(~list(.x[[which(site.pfts.vec %in% defined.pfts)]],restart=.x$restart))
+        new.params <- purrr::map(
+          new.params,
+          ~list(
+            .x[[which(site.pfts.vec %in% defined.pfts)]],
+            restart=.x$restart))
       # warn if there is a pft specified in the site but it's not defined in the pecan xml.
       if (length(which(!(site.pfts.vec %in% defined.pfts)))>0) 
         PEcAn.logger::logger.warn(paste0("The following pfts are specified for the siteid ", settings$run$site$id ," but they are not defined as a pft in pecan.xml:",

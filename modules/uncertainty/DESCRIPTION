@@ -28,22 +28,21 @@ Description: The Predictive Ecosystem Carbon Analyzer
     PECAn is to streamline the interaction between data and
     models, and to improve the efficacy of scientific
     investigation.
-Depends:
-    PEcAn.utils,
-    PEcAn.priors,
-    ggplot2,
-    ggmap,
-    gridExtra
 Imports:
     coda (>= 0.18),
     dplyr,
+    ggplot2,
+    gridExtra,
     PEcAn.DB,
     PEcAn.emulator,
     PEcAn.logger,
+    PEcAn.priors,
     PEcAn.settings,
+    PEcAn.utils,
     plyr (>= 1.8.4),
     purrr,
     randtoolbox,
+    rlang,
     udunits2
 Suggests:
     testthat (>= 1.0.2),

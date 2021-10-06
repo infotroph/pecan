@@ -43,7 +43,6 @@ wanted <- c(
 'future',
 'geonames',
 'getPass',
-'ggmap',
 'ggplot2',
 'ggrepel',
 'glue',

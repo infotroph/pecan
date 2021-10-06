@@ -1,3 +1,10 @@
+# PEcAn.uncertainty 1.7.2.x (unreleased)
+
+## Bug fixes
+
+* Loading `PEcAn.uncertainty` no longer attaches ggplot or any other package to the search path
+* Cleaned up many check errors by consistently calling dependencies from their own namespaces
+
 # PEcAn.uncertainty 1.7.2
 
 ## Added

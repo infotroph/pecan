@@ -37,10 +37,12 @@ prep.data.assim <- function(settings, numvals) {
       pos <- obs >= 0
       
       res <- obs
-      res[pos]  <- rexp(length(obs[pos]),
-                        1 / (AMF.params$intercept[[1]] + (AMF.params$slopeP[[1]] * obs[pos])))
-      res[!pos]  <- rexp(length(obs[!pos]),
-                         1 / (AMF.params$intercept[[1]] + (AMF.params$slopeN[[1]] * obs[!pos])))
+      res[pos]  <- stats::rexp(
+        length(obs[pos]),
+        1 / (AMF.params$intercept[[1]] + (AMF.params$slopeP[[1]] * obs[pos])))
+      res[!pos]  <- stats::rexp(
+        length(obs[!pos]),
+        1 / (AMF.params$intercept[[1]] + (AMF.params$slopeN[[1]] * obs[!pos])))
       
       random_multiplier <- sample(c(-1,1), length(res), replace = TRUE)
       simulated <- obs+(random_multiplier*res)
@@ -63,19 +65,19 @@ prep.data.assim <- function(settings, numvals) {
   } # end i
   
   # Remove NA's
-  sums = sums[complete.cases(sums), ]
+  sums = sums[stats::complete.cases(sums), ]
   
-  obs.cov <- list(cov(sums))
+  obs.cov <- list(stats::cov(sums))
   names(obs.cov) <- settings$run$end_date
-  
+
   names(obs.mean) <- names(field_data)
   obs.mean <- list(obs.mean)
   names(obs.mean) <- settings$run$end_date
-  
+
   PEcAn.logger::logger.info("Calcualted obs.mean")
   print(obs.mean)
   PEcAn.logger::logger.info("Calcualted obs.cov")
   print(obs.cov)
-  
+
   PEcAn.assim.sequential::sda.enkf(settings, obs.cov = obs.cov, obs.mean = obs.mean)
 } # prep.data.assim
