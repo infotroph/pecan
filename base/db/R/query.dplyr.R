@@ -207,7 +207,7 @@ get_var_names <- function(bety, workflow_id, run_id, remove_pool = TRUE) {
         files <- list.files(outputfolder, "*.nc$", full.names = TRUE)
         for (file in files) {
           nc <- ncdf4::nc_open(file)
-          lapply(nc$var, function(x) {
+          lapply(nc$nc_var, function(x) {
             if (x$name != "") {
               var_names[[x$longname]] <<- x$name
             }
@@ -270,8 +270,8 @@ load_data_single_run <- function(bety, workflow_id, run_id) {
   globalDF$run_id <- run_id
   globalDF$xlab <- "Time"
   globalDF$ylab <- unlist(sapply(globalDF$var_name, function(x){
-    if(!is.null(nc$var[[x]]$units)){
-      return(nc$var[[x]]$units)
+    if(!is.null(nc$nc_var[[x]]$units)){
+      return(nc$nc_var[[x]]$units)
     }else{
       return("")
     }

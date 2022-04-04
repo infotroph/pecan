@@ -24,7 +24,7 @@
 ##' @return a copy of the first input trait with modified mean, stat, and n
 derive.traits <- function(FUN, ..., input = list(...),
                           match.columns = c('citation_id', 'site_id', 'specie_id'),
-                          var.name = NA, sample.size = 10^6){
+                          nc_var.name = NA, sample.size = 10^6){
   if(length(input) == 1){
     input <- input[[1]]
     #KLUDGE: modified to handle empty datasets
@@ -47,13 +47,13 @@ derive.traits <- function(FUN, ..., input = list(...),
                                                       function(data){data[data[[match.column]] == id,]})
                              derive.traits(FUN, input=filtered.input,
                                            match.columns=match.columns[-1],
-                                           var.name=var.name,
+                                           nc_var.name=nc_var.name,
                                            sample.size=sample.size)
                            })
     derived.traits <- derived.traits[!is.null(derived.traits)]
     derived.traits <- do.call(rbind, derived.traits)
     return(derived.traits)
   } else {
-    return(derive.trait(FUN, input = input, var.name = var.name, sample.size = sample.size))
+    return(derive.trait(FUN, input = input, nc_var.name = nc_var.name, sample.size = sample.size))
   }
 }

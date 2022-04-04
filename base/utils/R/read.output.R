@@ -210,7 +210,7 @@ read.output <- function(runid, outdir,
       if (verbose) PEcAn.logger::logger.debug("Processing file: ", ncfile)
       nc <- ncdf4::nc_open(ncfile, verbose = verbose)
       if (is.null(variables)) {
-        variables <- names(nc[["var"]])
+        variables <- names(nc[["nc_var"]])
         PEcAn.logger::logger.info(
           "Variables not specified. Reading output for all variables, which are as follows: ",
           paste(variables, collapse = ", ")
@@ -227,14 +227,14 @@ read.output <- function(runid, outdir,
       }
       for (v in variables) {
         if (verbose) PEcAn.logger::logger.debug("Processing variable: ", v)
-        if (!(v %in% c(names(nc$var), names(nc$dim)))) {
+        if (!(v %in% c(names(nc$nc_var), names(nc$dim)))) {
           PEcAn.logger::logger.warn(paste(v, "missing in", ncfile))
           next
         }
         newresult <- ncdf4::ncvar_get(nc, v, verbose = verbose)
         # begin per-pft read
         # check if the variable has 'pft' as a dimension
-        if ("pft" %in% sapply(nc$var[[v]]$dim, `[[`, "name")) {
+        if ("pft" %in% sapply(nc$nc_var[[v]]$dim, `[[`, "name")) {
           # means there are PFT specific outputs we want
           # the variable *PFT* in standard netcdfs has *pft* dimension,
           # numbers as values, and full pft names as an attribute
@@ -291,13 +291,13 @@ read.output <- function(runid, outdir,
   # a consensus how to convert these to dataframe format so they
   # should be omitted.
 
-  for (var in names(result)) {
-    c <- dim(result[[var]])[2]
-    r <- dim(result[[var]])[1]
+  for (nc_var in names(result)) {
+    c <- dim(result[[nc_var]])[2]
+    r <- dim(result[[nc_var]])[1]
     if (!is.na(c) & r > 1) {
-      PEcAn.logger::logger.warn("Variable", var, "has", r, "dimensions,
+      PEcAn.logger::logger.warn("Variable", nc_var, "has", r, "dimensions,
       it cannot be loaded and will be omitted.")
-      result[[var]] <- NULL
+      result[[nc_var]] <- NULL
     }
   }
 

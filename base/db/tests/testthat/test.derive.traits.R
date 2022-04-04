@@ -19,7 +19,7 @@ test_that("derive.traits works",{
   input <- list(x = data.frame(mean = 1, stat = 1, n = 1))
   test.derived <- derive.trait(FUN = function(x){1/x},
                               input = input,
-                              var.name = 'x')
+                              nc_var.name = 'x')
   expect_equal(test.derived,
                structure(list(mean = 0.0944129994366609, stat = 687.395104414576, n = 1, vname = "x"), .Names = c("mean", "stat", "n", "vname"), row.names = c(NA, -1L), class = "data.frame"))
 })

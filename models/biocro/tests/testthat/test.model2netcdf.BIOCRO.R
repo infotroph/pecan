@@ -26,7 +26,7 @@ test_that("model2netcdf.BIOCRO reads a .csv and writes a netcdf file for each ye
   })
 
 biocro.nc <- ncdf4::nc_open(biocro.ncfile)
-vars <- biocro.nc$var
+vars <- biocro.nc$nc_var
 dims <- biocro.nc$dim
 
 
@@ -50,9 +50,9 @@ test_that("dimensions have MsTMIP standard units", {
 
 test_that("variables have MsTMIP standard units", {
   standard_vars <- PEcAn.utils::standard_vars
-  for (var in vars) {
-    if (var$name %in% standard_vars$Variable.Name) {
-      expect_true(var$units == standard_vars[standard_vars$Variable.Name == var$name,
+  for (nc_var in vars) {
+    if (nc_var$name %in% standard_vars$Variable.Name) {
+      expect_true(nc_var$units == standard_vars[standard_vars$Variable.Name == nc_var$name,
         "Units"])
     }
   }
@@ -68,7 +68,7 @@ test_that("model2netcdf.BIOCRO will add a second site to an existing file", {
   model2netcdf.BIOCRO(resultDT, genus = "foo", outdir = outdir, lat = 44.6, lon = -88.1)
   model2netcdf.BIOCRO(resultDT, genus = "foo", outdir = outdir, lat = 44.7, lon = -88.2)
   biocro.nc <- ncdf4::nc_open(biocro.ncfile)
-  vars <- biocro.nc$var
+  vars <- biocro.nc$nc_var
   dims <- biocro.nc$dim
   
   ncdf4::ncvar_get(biocro.nc, "latitude")

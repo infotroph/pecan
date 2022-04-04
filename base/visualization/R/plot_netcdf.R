@@ -10,7 +10,7 @@
 # ----------------------------------------------------------------------
 # PRIVATE FUNCTIONS
 # ----------------------------------------------------------------------
-data.fetch <- function(var, nc, fun = mean) {
+data.fetch <- function(nc_var, nc, fun = mean) {
   # get a specific set of values from the HDF data
   #
   # Args:
@@ -21,7 +21,7 @@ data.fetch <- function(var, nc, fun = mean) {
   #
   # Returns:
   #   values extracted from the nc data
-  if (var == "time") {
+  if (nc_var == "time") {
     val <- unique(floor(nc$dim[["time"]]$vals))
     attr(val, "lbl") <- nc$dim$time$units
     return(val)
@@ -32,12 +32,12 @@ data.fetch <- function(var, nc, fun = mean) {
   aggrlist <- list(floor(nc$dim[["time"]]$vals))
   
   # aggregate the data
-  data <- ncdf4::ncvar_get(nc, var)
+  data <- ncdf4::ncvar_get(nc, nc_var)
   val  <- stats::aggregate(data[indices], by = aggrlist, FUN = fun)$x
   
   # get the label
-  title <- nc$var[[var]]$longname
-  units <- nc$var[[var]]$units
+  title <- nc$nc_var[[nc_var]]$longname
+  units <- nc$nc_var[[nc_var]]$units
   if ((title == "") && (units == "")) {
     attr(val, "lbl") <- "Unknown"
   } else if (title == "") {

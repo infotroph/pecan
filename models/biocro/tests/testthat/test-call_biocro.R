@@ -195,9 +195,9 @@ test_that("call_biocro_1 updates initial values after year 1", {
       WetDat = WetDat, genus = "Salix", year_in_run = 2, config = config,
       lat = 40, lon = -88, tmp.result = res1$tmp.result,
       HarvestedYield = res1$HarvestedYield)
-    for (var in names(config$pft$initial_values)) {
+    for (nc_var in names(config$pft$initial_values)) {
       expect_equal(
-        mockery::mock_args(b1mock)[[2]]$initial_values[[!!var]],
-        res1$tmp.result[[!!var]][nrow(res1$tmp.result)])
+        mockery::mock_args(b1mock)[[2]]$initial_values[[!!nc_var]],
+        res1$tmp.result[[!!nc_var]][nrow(res1$tmp.result)])
     }
 })

@@ -326,7 +326,7 @@ pdf.stats <- function(distn, A, B) {
   ci <- qci(c(0.025, 0.975), A, B)
   lcl <- ci[1]
   ucl <- ci[2]
-  out <- unlist(list(mean = mean, var = var, lcl = lcl, ucl = ucl))
+  out <- unlist(list(mean = mean, nc_var = var, lcl = lcl, ucl = ucl))
   return(out)
 } # pdf.stats
 #--------------------------------------------------------------------------------------------------#
