@@ -56,10 +56,10 @@ data.fetch2 <- function(var, start=start_day, end=end_day, values=values_day, fu
   #   values extracted from the hdf data
   
   # find the variable in the data
-  if (is.null(data[[var]])) {
-    useme <- sprintf("AVG_%s", var)
+  if (is.null(data[[nc_var]])) {
+    useme <- sprintf("AVG_%s", nc_var)
     if (is.null(data[[useme]])) {
-      stop(sprintf("Could not find the variable '%s' in the data.", var))
+      stop(sprintf("Could not find the variable '%s' in the data.", nc_var))
     }
   } else {
     useme <- var
@@ -98,11 +98,11 @@ data.fetch2 <- function(var, start=start_day, end=end_day, values=values_day, fu
 }
 
 # 
-data.fetch <- function(var, start=start_day, end=end_day, values=values_day, fun=mean) {
+data.fetch <- function(nc_var, start=start_day, end=end_day, values=values_day, fun=mean) {
   # get specific dataset either by computation or from dataset
   #
   # Args:
-  #   var:    the variable to extract from the hdf data
+  #   nc_var:    the variable to extract from the hdf data
   #   start:  the start time in the array
   #   end:    the end time in the array
   #   values: number of values per day
@@ -110,23 +110,23 @@ data.fetch <- function(var, start=start_day, end=end_day, values=values_day, fun
   #
   # Returns:
   #   values extracted from the hdf data
-  if (var == "time") {
+  if (nc_var == "time") {
     val <- start:end
     attr(val, "lbl") <- "Day of the year"
     return(val)
-  } else if (var == "Reco") {
+  } else if (nc_var == "Reco") {
     PLANT_RESP  <- data.fetch2("AVG_PLANT_RESP", start, end, values, fun);
     HTROPH_RESP <- data.fetch2("AVG_HTROPH_RESP", start, end, values, fun);
     val         <- (PLANT_RESP + HTROPH_RESP) * umol2gc
     attr(val, "lbl") <- "unknown"
     return(val)
-  } else if (var == "NPP") {
+  } else if (nc_var == "NPP") {
     GPP         <- data.fetch2("AVG_GPP", start, end, values, fun);
     PLANT_RESP  <- data.fetch2("AVG_PLANT_RESP", start, end, values, fun);
     val         <- (GPP - PLANT_RESP)  * umol2gc
     attr(val, "lbl") <- "unknown"
     return(val)
-  } else if (var == "NEE") {
+  } else if (nc_var == "NEE") {
     GPP         <- data.fetch2("AVG_GPP", start, end, values, fun);
     PLANT_RESP  <- data.fetch2("AVG_PLANT_RESP", start, end, values, fun);
     HTROPH_RESP <- data.fetch2("AVG_HTROPH_RESP", start, end, values, fun);
@@ -134,7 +134,7 @@ data.fetch <- function(var, start=start_day, end=end_day, values=values_day, fun
     attr(val, "lbl") <- "unknown"
     return(val)
   } else {
-    return(data.fetch2(var, start, end, values, fun));
+    return(data.fetch2(nc_var, start, end, values, fun));
   }
 }
 
