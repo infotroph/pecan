@@ -1,5 +1,8 @@
 # PEcAn.data.land 1.7.2.9000
 
+## Added
+* New function soilgrids_soilC_extract retrieves (from soilgrids.org's 250m product v2.0) the mean soil organic carbon profile, with associated undertainty values at each depth, from any lat/lon points (#3040)
+
 ## Fixed
 
 * `gSSURGO.Query()` now always returns all the columns requested, even ones that are all NA. It also now always requires `mukeys` to be specified.
