@@ -2,8 +2,7 @@
 
 # Don't use X11 for rgl
 Sys.setenv(RGL_USE_NULL = TRUE)
-rlib <- Sys.getenv('R_LIBS_USER', '/usr/local/lib/R/site-library')
-Sys.setenv(RLIB = rlib)
+rlib <- Sys.getenv('R_LIBS_USER', .libPaths()[[1]])
 
 
 # Find the latest of several possible minimum package versions
