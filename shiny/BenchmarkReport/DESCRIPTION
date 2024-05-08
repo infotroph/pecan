@@ -1,7 +1,8 @@
 Type: Shiny
 Title: Benchmarking Report
-License: BSD_3_clause + file LICENSE
 Author: Betsy Cowdery ecowdery@bu.edu
-Tags: PEcAn
-Imports: shiny
+License: BSD_3_clause + file LICENSE
+Imports: 
+    shiny
 #DisplayMode: Showcase
+Tags: PEcAn

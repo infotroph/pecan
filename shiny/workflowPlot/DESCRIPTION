@@ -1,29 +1,30 @@
 Type: Shiny
 Title: Workflow Output
-License: BSD_3_clause + file LICENSE
 Author: Rob Kooper <kooper@illinois.edu>
-AuthorUrl: http://www.ncsa.illinois.edu/assets/php/directory/contact.php?contact=kooper
-Tags: PEcAn
-DisplayMode: showcase
+License: BSD_3_clause + file LICENSE
 Imports:
-	dplyr,
-	DT,
-	ggplot2,
-	knitr,
-	lubridate,
-	ncdf4,
-	PEcAn.benchmark,
-	PEcAn.DB,
-	PEcAn.remote,
-	PEcAn.settings,
-	PEcAn.utils,
-	PEcAn.visualization,
-	plotly,
-	purrr,
-	reshape2,
-	scales,
-	shiny,
-	shinyjs,
-	shinythemes,
-	tidyr,
-	units
+    dplyr,
+    DT,
+    ggplot2,
+    knitr,
+    lubridate,
+    ncdf4,
+    PEcAn.benchmark,
+    PEcAn.DB,
+    PEcAn.remote,
+    PEcAn.settings,
+    PEcAn.utils,
+    PEcAn.visualization,
+    plotly,
+    purrr,
+    reshape2,
+    scales,
+    shiny,
+    shinyjs,
+    shinythemes,
+    tidyr,
+    units
+AuthorUrl: 
+    http://www.ncsa.illinois.edu/assets/php/directory/contact.php?contact=kooper
+DisplayMode: showcase
+Tags: PEcAn

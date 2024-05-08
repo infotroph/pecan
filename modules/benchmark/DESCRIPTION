@@ -1,26 +1,27 @@
-Package: PEcAn.benchmark
 Type: Package
+Package: PEcAn.benchmark
 Title: PEcAn Functions Used for Benchmarking
 Version: 1.7.2
 Date: 2021-10-04
-Authors@R: c(person("Mike", "Dietze", role = c("aut", "cre"),
-                     email = "dietze@bu.edu"),
-             person("David", "LeBauer", role = c("aut"),
-                     email = "dlebauer@email.arizona.edu"),
-             person("Rob", "Kooper", role = c("aut"),
-                     email = "kooper@illinois.edu"),
-             person("Toni", "Viskari", role = c("aut")),
-             person("University of Illinois, NCSA", role = c("cph")))
+Authors@R: c(
+    person("Mike", "Dietze", , "dietze@bu.edu", role = c("aut", "cre")),
+    person("David", "LeBauer", , "dlebauer@email.arizona.edu", role = "aut"),
+    person("Rob", "Kooper", , "kooper@illinois.edu", role = "aut"),
+    person("Toni", "Viskari", role = "aut"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
 Author: Michael Dietze, David LeBauer, Rob Kooper, Toni Viskari
 Maintainer: Mike Dietze <dietze@bu.edu>
-Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a scientific
-    workflow management tool that is designed to simplify the management of
-    model parameterization, execution, and analysis. The goal of PEcAn is to
-    streamline the interaction between data and models, and to improve the
-    efficacy of scientific investigation.
+Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a
+    scientific workflow management tool that is designed to simplify the
+    management of model parameterization, execution, and analysis. The
+    goal of PEcAn is to streamline the interaction between data and
+    models, and to improve the efficacy of scientific investigation.
+License: BSD_3_clause + file LICENSE
 Imports:
     dplyr,
     ggplot2,
+    grDevices,
     gridExtra,
     lubridate (>= 1.6.0),
     magrittr,
@@ -36,16 +37,14 @@ Imports:
     tidyselect,
     units,
     utils,
-    grDevices,
     XML (>= 3.98-1.4),
-    zoo 
+    zoo
 Suggests:
+    BrownDog,
     PEcAn.data.land,
-    testthat (>= 2.0.0),
-    BrownDog
-License: BSD_3_clause + file LICENSE
+    testthat (>= 2.0.0)
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
 Encoding: UTF-8
+LazyData: FALSE
+LazyLoad: yes
 RoxygenNote: 7.2.3

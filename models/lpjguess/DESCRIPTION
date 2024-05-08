@@ -1,30 +1,30 @@
-Package: PEcAn.LPJGUESS
 Type: Package
+Package: PEcAn.LPJGUESS
 Title: PEcAn Package for Integration of the LPJ-GUESS Model
 Version: 1.7.2
 Date: 2021-10-04
-Authors@R: c(person("Istem", "Fer", role = c("aut", "cre"),
-                     email = "istem.fer@fmi.fi"),
-             person("Tony", "Gardella", role = c("aut"),
-                     email = "tonygard@bu.edu"),
-             person("University of Illinois, NCSA", role = c("cph")))
+Authors@R: c(
+    person("Istem", "Fer", , "istem.fer@fmi.fi", role = c("aut", "cre")),
+    person("Tony", "Gardella", , "tonygard@bu.edu", role = "aut"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
 Author: Istem Fer, Tony Gardella
 Maintainer: Istem Fer <fer.istem@gmail.com>
 Description: This module provides functions to link LPJ-GUESS to PEcAn.
+License: BSD_3_clause + file LICENSE
 Imports:
+    lubridate (>= 1.6.0),
+    ncdf4 (>= 1.15),
     PEcAn.logger,
     PEcAn.remote,
     PEcAn.utils,
-    lubridate (>= 1.6.0),
-    ncdf4 (>= 1.15),
     tibble
 Suggests:
     testthat (>= 1.0.2)
-SystemRequirements: LPJ-GUESS model
-OS_type: unix
-License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
 Encoding: UTF-8
+LazyData: FALSE
+LazyLoad: yes
+OS_type: unix
 RoxygenNote: 7.2.3
+SystemRequirements: LPJ-GUESS model

@@ -1,30 +1,31 @@
-Package: PEcAn.GDAY
 Type: Package
+Package: PEcAn.GDAY
 Title: PEcAn Package for Integration of the GDAY Model
 Version: 1.7.2
 Date: 2021-10-04
-Authors@R: c(person("Martin", "De Kauwe", role = c("aut", "cre"),
-                     email = "mdekauwe@gmail.com"),
-             person("Tony", "Gardella", role = c("aut"),
-                     email = "tonygard@bu.edu"),
-             person("University of Illinois, NCSA", role = c("cph")))
+Authors@R: c(
+    person("Martin", "De Kauwe", , "mdekauwe@gmail.com", role = c("aut", "cre")),
+    person("Tony", "Gardella", , "tonygard@bu.edu", role = "aut"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
 Author: Martin De Kauwe
 Maintainer: Martin De Kauwe <mdekauwe@gmail.com>
-Description: This module provides functions to link the GDAY model to PEcAn.
+Description: This module provides functions to link the GDAY model to
+    PEcAn.
+License: BSD_3_clause + file LICENSE
 Depends:
     PEcAn.utils
 Imports:
-    PEcAn.logger,
-    PEcAn.remote,
     lubridate (>= 1.6.0),
-    ncdf4 (>= 1.15)
+    ncdf4 (>= 1.15),
+    PEcAn.logger,
+    PEcAn.remote
 Suggests:
     testthat (>= 1.0.2)
-SystemRequirements: GDAY
-OS_type: unix
-License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyLoad: yes
-LazyData: TRUE
 Encoding: UTF-8
+LazyData: TRUE
+LazyLoad: yes
+OS_type: unix
 RoxygenNote: 7.2.3
+SystemRequirements: GDAY

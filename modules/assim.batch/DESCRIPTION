@@ -1,33 +1,35 @@
-Package: PEcAn.assim.batch
 Type: Package
+Package: PEcAn.assim.batch
 Title: PEcAn Functions Used for Ecological Forecasts and Reanalysis
 Version: 1.7.2.9000
 Date: 2021-10-04
-Authors@R: c(person("Mike", "Dietze", role = c("aut"),
-                     email = "dietze@bu.edu"),
-             person("Istem", "Fer", role = c("aut", "cre"),
-                     email = "istem.fer@fmi.fi"),
-             person("Ryan", "Kelly", role = c("aut"),
-                     email = "rykelly@bu.edu"),
-             person("University of Illinois, NCSA", role = c("cph")))
-Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a scientific
-    workflow management tool that is designed to simplify the management of
-    model parameterization, execution, and analysis. The goal of PECAn is to
-    streamline the interaction between data and models, and to improve the
-    efficacy of scientific investigation.
-VignetteBuilder: knitr
+Authors@R: c(
+    person("Mike", "Dietze", , "dietze@bu.edu", role = "aut"),
+    person("Istem", "Fer", , "istem.fer@fmi.fi", role = c("aut", "cre")),
+    person("Ryan", "Kelly", , "rykelly@bu.edu", role = "aut"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
+Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a
+    scientific workflow management tool that is designed to simplify the
+    management of model parameterization, execution, and analysis. The
+    goal of PECAn is to streamline the interaction between data and
+    models, and to improve the efficacy of scientific investigation.
+License: BSD_3_clause + file LICENSE
 Imports:
     abind,
     BayesianTools,
     coda (>= 0.18),
-    MASS,
-    methods,
-    mlegp,
     ellipse,
     graphics,
     grDevices,
     IDPmisc,
+    lqmm,
     lubridate (>= 1.6.0),
+    MASS,
+    MCMCpack,
+    methods,
+    mlegp,
+    mvtnorm,
     ncdf4 (>= 1.15),
     parallel,
     PEcAn.benchmark,
@@ -40,23 +42,21 @@ Imports:
     PEcAn.uncertainty,
     PEcAn.utils,
     PEcAn.workflow,
+    prodlim,
     rjags,
     stats,
-    prodlim,
-    MCMCpack,
     TruncatedNormal (>= 2.2),
     utils,
-    XML,
-    lqmm,
-    mvtnorm
+    XML
 Suggests:
     knitr (>= 1.42),
     rmarkdown (>= 2.19),
     testthat (>= 1.0.2)
-License: BSD_3_clause + file LICENSE
+VignetteBuilder: 
+    knitr
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+LazyData: FALSE
+LazyLoad: yes
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3

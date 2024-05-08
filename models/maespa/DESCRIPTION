@@ -1,36 +1,38 @@
-Package: PEcAn.MAESPA
 Type: Package
-Title: PEcAn Functions Used for Ecological Forecasts and Reanalysis using MAESPA
+Package: PEcAn.MAESPA
+Title: PEcAn Functions Used for Ecological Forecasts and Reanalysis using
+    MAESPA
 Version: 1.7.2
 Date: 2021-10-04
-Authors@R: c(person("Tony", "Gardella", role = c("aut", "cre"),
-                     email = "tonygard@bu.edu"),
-             person("University of Illinois, NCSA", role = c("cph")))
+Authors@R: c(
+    person("Tony", "Gardella", , "tonygard@bu.edu", role = c("aut", "cre")),
+    person("University of Illinois, NCSA", role = "cph")
+  )
 Author: Tony Gardella
 Maintainer: Tony Gardella <tonygard@bu.edu>
-Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a scientific
-    workflow management tool that is designed to simplify the management of
-    model parameterization, execution, and analysis. The goal of PECAn is to
-    streamline the interaction between data and models, and to improve the
-    efficacy of scientific investigation.This package allows for MAESPA to be
-    run through the PEcAN workflow.
+Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a
+    scientific workflow management tool that is designed to simplify the
+    management of model parameterization, execution, and analysis. The
+    goal of PECAn is to streamline the interaction between data and
+    models, and to improve the efficacy of scientific investigation.This
+    package allows for MAESPA to be run through the PEcAN workflow.
+License: BSD_3_clause + file LICENSE
 Imports:
+    lubridate (>= 1.6.0),
+    ncdf4 (>= 1.15),
     PEcAn.data.atmosphere,
     PEcAn.logger,
     PEcAn.remote,
-    PEcAn.utils,
-    lubridate (>= 1.6.0),
-    ncdf4 (>= 1.15),
+    PEcAn.utils
 Suggests:
-    Maeswrap,
     coda,
+    Maeswrap,
     testthat (>= 1.0.2)
-SystemRequirements: MAESPA ecosystem model
-OS_type: unix
-License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
-Require: 
 Encoding: UTF-8
+LazyData: FALSE
+LazyLoad: yes
+OS_type: unix
+Require: 
 RoxygenNote: 7.2.3
+SystemRequirements: MAESPA ecosystem model

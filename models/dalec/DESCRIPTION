@@ -1,28 +1,29 @@
-Package: PEcAn.DALEC
 Type: Package
+Package: PEcAn.DALEC
 Title: PEcAn Package for Integration of the DALEC Model
 Version: 1.7.2
 Date: 2021-10-04
-Authors@R: c(person("Mike", "Dietze", role = c("aut", "cre"),
-                     email = "dietze@bu.edu"),
-             person("Tristan", "Quaife", role = c("aut")),
-             person("University of Illinois, NCSA", role = c("cph")))
+Authors@R: c(
+    person("Mike", "Dietze", , "dietze@bu.edu", role = c("aut", "cre")),
+    person("Tristan", "Quaife", role = "aut"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
 Author: Mike Dietze, Tristain Quaife
 Maintainer: Mike Dietze <dietze@bu.edu>
 Description: This module provides functions to link DALEC to PEcAn.
+License: BSD_3_clause + file LICENSE
 Imports:
-    PEcAn.logger,
-    PEcAn.remote,
     lubridate (>= 1.6.0),
     ncdf4 (>= 1.15),
+    PEcAn.logger,
+    PEcAn.remote,
     PEcAn.utils
 Suggests:
     testthat (>= 1.0.2)
-SystemRequirements: dalec
-OS_type: unix
-License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
 Encoding: UTF-8
+LazyData: FALSE
+LazyLoad: yes
+OS_type: unix
 RoxygenNote: 7.2.3
+SystemRequirements: dalec

@@ -1,12 +1,12 @@
 Type: Shiny
 Title: Workflow Output
-License: BSD_3_clause + file LICENSE
 Author: Yan Zhao <yanzhao3@illinois.edu>
-AuthorUrl: https://github.com/yan130
-Tags: PEcAn
-DisplayMode: Normal
+License: BSD_3_clause + file LICENSE
 Imports:
-	leaflet,
-	PEcAn.DB,
-	PEcAn.visualization,
-	RPostgreSQL
+    leaflet,
+    PEcAn.DB,
+    PEcAn.visualization,
+    RPostgreSQL
+AuthorUrl: https://github.com/yan130
+DisplayMode: Normal
+Tags: PEcAn

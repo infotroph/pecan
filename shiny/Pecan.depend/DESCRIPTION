@@ -1,9 +1,7 @@
 Type: Shiny
 Title: Visualize dependencies between PEcAn packages
-License: BSD_3_clause + file LICENSE
 Author: Hamze Dokoohaki <hamzed@bu.edu>
-Tags: PEcAn
-#DisplayMode: Showcase
+License: BSD_3_clause + file LICENSE
 Imports:
     CodeDepends,
     DependenciesGraphs,
@@ -13,4 +11,7 @@ Imports:
     shinyWidgets,
     visNetwork,
     XML
-Remotes: datastorm-open/DependenciesGraphs
+Remotes: 
+    datastorm-open/DependenciesGraphs
+#DisplayMode: Showcase
+Tags: PEcAn

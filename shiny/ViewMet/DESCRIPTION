@@ -1,8 +1,7 @@
 Type: Shiny
 Title: Plot data from CF-formatted meteorology files
-License: BSD_3_clause + file LICENSE
 Author: Betsy Cowdery <ecowdery@bu.edu>
-Tags: PEcAn
+License: BSD_3_clause + file LICENSE
 Imports:
     dplyr,
     DT,
@@ -14,3 +13,4 @@ Imports:
     PEcAn.visualization,
     plyr,
     stringr
+Tags: PEcAn

@@ -2,33 +2,31 @@ Package: PEcAn.logger
 Title: Logger Functions for 'PEcAn'
 Version: 1.8.1.9000
 Date: 2021-07-27
-Authors@R: c(person("Rob", "Kooper", role = c("aut", "cre"),
-                     email = "kooper@illinois.edu"),
-             person("Alexey", "Shiklomanov", role = c("aut"),
-                     email = "alexey.shiklomanov@pnnl.gov"),
-             person("Shashank", "Singh", role = c("aut"),
-                     email = "shashanksingh819@gmail.com"),
-             person("Chris", "Black", role = c("aut"),
-                     email = "chris@ckblack.org"),
-             person("University of Illinois, NCSA", role = c("cph")))
-Description: Convenience functions for logging outputs from 'PEcAn',
-   the Predictive Ecosystem Analyzer (LeBauer et al. 2017)
-   <doi:10.1890/12-0137.1>. Enables the user to set what level of messages are
-   printed, as well as whether these messages are written to the console, 
-   a file, or both. It also allows control over whether severe errors should
-   stop execution of the 'PEcAn' workflow; this allows strictness when debugging
-   and lenience when running large batches of simulations that should not be
-   terminated by errors in individual models. It is loosely based on
-   the 'log4j' package.
-BugReports: https://github.com/PecanProject/pecan/issues
+Authors@R: c(
+    person("Rob", "Kooper", , "kooper@illinois.edu", role = c("aut", "cre")),
+    person("Alexey", "Shiklomanov", , "alexey.shiklomanov@pnnl.gov", role = "aut"),
+    person("Shashank", "Singh", , "shashanksingh819@gmail.com", role = "aut"),
+    person("Chris", "Black", , "chris@ckblack.org", role = "aut"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
+Description: Convenience functions for logging outputs from 'PEcAn', the
+    Predictive Ecosystem Analyzer (LeBauer et al. 2017)
+    <doi:10.1890/12-0137.1>. Enables the user to set what level of
+    messages are printed, as well as whether these messages are written to
+    the console, a file, or both. It also allows control over whether
+    severe errors should stop execution of the 'PEcAn' workflow; this
+    allows strictness when debugging and lenience when running large
+    batches of simulations that should not be terminated by errors in
+    individual models. It is loosely based on the 'log4j' package.
+License: BSD_3_clause + file LICENSE
 URL: https://pecanproject.github.io/
+BugReports: https://github.com/PecanProject/pecan/issues
 Imports: 
-    utils,
-    stringi
+    stringi,
+    utils
 Suggests: 
     testthat,
     withr
-License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
-RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3

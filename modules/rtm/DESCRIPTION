@@ -1,43 +1,44 @@
-Package: PEcAnRTM
 Type: Package
+Package: PEcAnRTM
 Title: PEcAn Functions Used for Radiative Transfer Modeling
 Version: 1.7.2
 Date: 2021-10-04
-Authors@R: c(person("Mike", "Dietze", role = c("aut"),
-                     email = "dietze@bu.edu"),
-             person("Shawn", "Serbin", role = c("aut"),
-                     email = "sserbin@bnl.gov"),
-             person("Alexey", "Shiklomanov", role = c("aut", "cre"),
-                     email = "alexey.shiklomanov@pnnl.gov"),
-             person("University of Illinois, NCSA", role = c("cph")))
+Authors@R: c(
+    person("Mike", "Dietze", , "dietze@bu.edu", role = "aut"),
+    person("Shawn", "Serbin", , "sserbin@bnl.gov", role = "aut"),
+    person("Alexey", "Shiklomanov", , "alexey.shiklomanov@pnnl.gov", role = c("aut", "cre")),
+    person("University of Illinois, NCSA", role = "cph")
+  )
 Author: Alexey Shiklomanov, Shawn Serbin, Mike Dietze
 Maintainer: Alexey Shiklomanov <ashiklom@bu.edu>
-Description: This package contains functions for performing forward runs and
-    inversions of radiative transfer models (RTMs). Inversions can be performed
-    using maximum likelihood, or more complex hierarchical Bayesian methods.
-    Underlying numerical analyses are optimized for speed using Fortran code.
+Description: This package contains functions for performing forward runs
+    and inversions of radiative transfer models (RTMs). Inversions can be
+    performed using maximum likelihood, or more complex hierarchical
+    Bayesian methods.  Underlying numerical analyses are optimized for
+    speed using Fortran code.
+License: BSD_3_clause + file LICENSE
 Imports:
-    PEcAn.logger,
-    MASS,
+    BayesianTools,
     coda,
     lubridate (>= 1.6.0),
+    MASS,
     PEcAn.assim.batch,
-    BayesianTools
+    PEcAn.logger
 Suggests:
-    minpack.lm,
-    mclust,
-    PEcAn.utils,
-    PEcAn.ED2,
-    XML,
-    testthat (>= 1.0.2),
     knitr (>= 1.42),
-    pwr
-OS_type: unix
-License: BSD_3_clause + file LICENSE
+    mclust,
+    minpack.lm,
+    PEcAn.ED2,
+    PEcAn.utils,
+    pwr,
+    testthat (>= 1.0.2),
+    XML
+VignetteBuilder: 
+    knitr
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
 Encoding: UTF-8
-VignetteBuilder: knitr
+LazyData: FALSE
+LazyLoad: yes
+OS_type: unix
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

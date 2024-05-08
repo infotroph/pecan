@@ -1,28 +1,28 @@
-Package: PEcAn.LDNDC
 Type: Package
+Package: PEcAn.LDNDC
 Title: PEcAn package for integration of the LDNDC model
 Version: 1.7.2
 Date: 2022-07-28
-Authors@R: c(person("Henri", "Kajasilta", role = c("aut", "cre"),
-                    email = "henri.kajasilta@fmi.fi"))
+Authors@R: 
+    person("Henri", "Kajasilta", , "henri.kajasilta@fmi.fi", role = c("aut", "cre"))
 Description: This module provides functions to link the (LDNDC) to PEcAn.
+License: BSD_3_clause + file LICENSE
 Imports:
-    PEcAn.logger,
-    PEcAn.utils (>= 1.4.8),
+    data.table,
     dplyr,
     lubridate,
     ncdf4,
-    data.table,
-    PEcAn.remote,
     PEcAn.data.atmosphere,
+    PEcAn.logger,
+    PEcAn.remote,
+    PEcAn.utils (>= 1.4.8),
     rlang
 Suggests:
     testthat (>= 1.0.2)
-SystemRequirements: LDNDC
-OS_type: unix
-License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
 Encoding: UTF-8
+LazyData: FALSE
+LazyLoad: yes
+OS_type: unix
 RoxygenNote: 7.2.3
+SystemRequirements: LDNDC

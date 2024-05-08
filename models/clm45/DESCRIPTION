@@ -1,19 +1,22 @@
-Package: PEcAn.CLM45
 Type: Package
+Package: PEcAn.CLM45
 Title: PEcAn Package for Integration of CLM4.5 Model
 Version: 1.7.2
 Date: 2021-10-04
-Authors@R: c(person("Mike", "Dietze", role = c("aut", "cre"),
-                     email = "dietze@bu.edu"),
-             person("University of Illinois, NCSA", role = c("cph")))
+Authors@R: c(
+    person("Mike", "Dietze", , "dietze@bu.edu", role = c("aut", "cre")),
+    person("University of Illinois, NCSA", role = "cph")
+  )
 Author: Mike Dietze
 Maintainer: Mike Dietze <dietze@bu.edu>
-Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a scientific
-    workflow management tool that is designed to simplify the management of
-    model parameterization, execution, and analysis. The goal of PECAn is to
-    streamline the interaction between data and models, and to improve the
-    efficacy of scientific investigation. This package provides functions to
-    link the Community Land Model, version 4.5, to PEcAn.
+Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a
+    scientific workflow management tool that is designed to simplify the
+    management of model parameterization, execution, and analysis. The
+    goal of PECAn is to streamline the interaction between data and
+    models, and to improve the efficacy of scientific investigation. This
+    package provides functions to link the Community Land Model, version
+    4.5, to PEcAn.
+License: BSD_3_clause + file LICENSE
 Depends:
     PEcAn.logger,
     PEcAn.utils
@@ -21,9 +24,8 @@ Imports:
     ncdf4 (>= 1.15)
 Suggests:
     testthat (>= 1.0.2)
-License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
 Encoding: UTF-8
+LazyData: FALSE
+LazyLoad: yes
 RoxygenNote: 7.2.3

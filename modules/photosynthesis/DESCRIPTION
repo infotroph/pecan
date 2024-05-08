@@ -1,44 +1,44 @@
-Package: PEcAn.photosynthesis
 Type: Package
+Package: PEcAn.photosynthesis
 Title: PEcAn functions used for leaf-level photosynthesis calculations
 Version: 1.7.2.9000
 Date: 2021-10-04
-Authors@R: c(person("Mike", "Dietze", role = c("aut", "cre"),
-                     email = "dietze@bu.edu"),
-             person("Xiaohui", "Feng", role = c("aut"),
-                     email = "feng22@illinois.edu"),
-             person("Shawn", "Serbin", role = c("aut"),
-                     email = "sserbin@bnl.gov"),
-             person("Shashank", "Singh", role = c("aut")),
-             person("Chris", "Black", role = c("ctb")),
-             person("University of Illinois, NCSA", role = c("cph")))
-Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a scientific
-    workflow management tool that is designed to simplify the management of
-    model parameterization, execution, and analysis. The goal of PECAn is to
-    streamline the interaction between data and models, and to improve the
-    efficacy of scientific investigation. The PEcAn.photosynthesis package
-    contains functions used in the Hierarchical Bayesian calibration of the
-    Farquhar et al 1980 model.
+Authors@R: c(
+    person("Mike", "Dietze", , "dietze@bu.edu", role = c("aut", "cre")),
+    person("Xiaohui", "Feng", , "feng22@illinois.edu", role = "aut"),
+    person("Shawn", "Serbin", , "sserbin@bnl.gov", role = "aut"),
+    person("Shashank", "Singh", role = "aut"),
+    person("Chris", "Black", role = "ctb"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
+Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a
+    scientific workflow management tool that is designed to simplify the
+    management of model parameterization, execution, and analysis. The
+    goal of PECAn is to streamline the interaction between data and
+    models, and to improve the efficacy of scientific investigation. The
+    PEcAn.photosynthesis package contains functions used in the
+    Hierarchical Bayesian calibration of the Farquhar et al 1980 model.
+License: BSD_3_clause + file LICENSE
 Depends:
     rjags
 Imports:
     coda (>= 0.18),
-    utils,
     graphics,
-    stats
+    stats,
+    utils
 Suggests:
     knitr (>= 1.42),
-    rmarkdown (>= 2.19),
-    markdown
-SystemRequirements: JAGS (>=2.2.0)
-License: BSD_3_clause + file LICENSE
+    markdown,
+    rmarkdown (>= 2.19)
+VignetteBuilder: 
+    knitr
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
-Collate:
-    fitA.R
-    Licor.QC.R
-    plots.R
 Encoding: UTF-8
+LazyData: FALSE
+LazyLoad: yes
 RoxygenNote: 7.2.3
-VignetteBuilder: knitr
+SystemRequirements: JAGS (>=2.2.0)
+Collate:
+    'fitA.R'
+    'Licor.QC.R'
+    'plots.R'

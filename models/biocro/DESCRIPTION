@@ -1,42 +1,41 @@
-Package: PEcAn.BIOCRO
 Type: Package
+Package: PEcAn.BIOCRO
 Title: PEcAn Package for Integration of the BioCro Model
 Version: 1.7.2
 Date: 2021-10-04
-Authors@R: c(person("David", "LeBauer", role = c("aut", "cre"),
-                     email = "dlebauer@email.arizona.edu"),
-             person("Chris", "Black", role = c("aut"),
-                     email = "chris@ckblack.org"),
-             person("Deepak", "Jaiswal", role = c("aut"),
-                     email = "djaiswal@djaiswal.edu"),
-             person("University of Illinois, NCSA", role = c("cph")))
+Authors@R: c(
+    person("David", "LeBauer", , "dlebauer@email.arizona.edu", role = c("aut", "cre")),
+    person("Chris", "Black", , "chris@ckblack.org", role = "aut"),
+    person("Deepak", "Jaiswal", , "djaiswal@djaiswal.edu", role = "aut"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
 Author: David LeBauer, Deepak Jaiswal, Christopher Black
 Maintainer: David LeBauer <dlebauer@illinois.edu>
 Description: This module provides functions to link BioCro to PEcAn.
+License: BSD_3_clause + file LICENSE
 Imports:
-    PEcAn.logger,
-    PEcAn.remote,
-    PEcAn.utils,
-    PEcAn.settings,
-    PEcAn.data.atmosphere,
-    PEcAn.data.land,
-    ncdf4 (>= 1.15),
-    lubridate (>= 1.7.0),
     data.table,
     dplyr,
-    XML, 
-    rlang
+    lubridate (>= 1.7.0),
+    ncdf4 (>= 1.15),
+    PEcAn.data.atmosphere,
+    PEcAn.data.land,
+    PEcAn.logger,
+    PEcAn.remote,
+    PEcAn.settings,
+    PEcAn.utils,
+    rlang,
+    XML
 Suggests:
     BioCro,
-    testthat (>= 2.0.0),
     mockery (>= 0.3.0),
     PEcAn.DB,
-    RPostgreSQL
+    RPostgreSQL,
+    testthat (>= 2.0.0)
 Remotes:
     github::ebimodeling/biocro@0.951
-License: BSD_3_clause + file LICENSE
 Copyright: Energy Biosciences Institute, Authors
-LazyLoad: yes
-LazyData: FALSE
 Encoding: UTF-8
+LazyData: FALSE
+LazyLoad: yes
 RoxygenNote: 7.2.3

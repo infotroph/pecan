@@ -1,17 +1,19 @@
-Package: PEcAn.dvmdostem
 Type: Package
+Package: PEcAn.dvmdostem
 Title: PEcAn Package for Integration of the Dvmdostem Model
 Version: 1.7.2
 Date: 2021-10-04
-Authors@R: c(person("Shawn", "Serbin", role = c("aut"),
-                     email = "sserbin@bnl.gov"),
-             person("Tobey", "Carman", role = c("aut", "cre"),
-                     email = "tcarman2@alaska.edu"),
-             person("University of Illinois, NCSA", role = c("cph")))
+Authors@R: c(
+    person("Shawn", "Serbin", , "sserbin@bnl.gov", role = "aut"),
+    person("Tobey", "Carman", , "tcarman2@alaska.edu", role = c("aut", "cre")),
+    person("University of Illinois, NCSA", role = "cph")
+  )
 Author: Tobey Carman, Shawn Serbin
-Maintainer: Tobey Carman <tcarman2@alaska.edu>, Shawn Serbin <sserbin@bnl.gov>
+Maintainer: Tobey Carman <tcarman2@alaska.edu>, Shawn Serbin
+    <sserbin@bnl.gov>
 Description: This module provides functions to link the dvmdostem model to
     PEcAn.
+License: BSD_3_clause + file LICENSE
 Imports:
     lubridate,
     ncdf4,
@@ -20,11 +22,10 @@ Imports:
     rjson
 Suggests:
     testthat (>= 1.0.2)
-SystemRequirements: dvmdostem
-OS_type: unix
-License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyLoad: yes
-LazyData: FALSE
 Encoding: UTF-8
+LazyData: FALSE
+LazyLoad: yes
+OS_type: unix
 RoxygenNote: 7.2.3
+SystemRequirements: dvmdostem

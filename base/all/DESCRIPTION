@@ -1,82 +1,65 @@
-Package: PEcAn.all
 Type: Package
-Title: PEcAn functions used for ecological forecasts and
-    reanalysis
+Package: PEcAn.all
+Title: PEcAn functions used for ecological forecasts and reanalysis
 Version: 1.7.2.9000
 Date: 2021-10-04
-Authors@R: c(person("Mike", "Dietze", role = c("aut"),
-                     email = "dietze@bu.edu"),
-             person("David", "LeBauer", role = c("aut", "cre"),
-                     email = "dlebauer@email.arizona.edu"),
-             person("Xiaohui", "Feng", role = c("aut"),
-                     email = "feng22@illinois.edu"),
-             person("Dan", "Wang", role = c("aut")),
-             person("Carl", "Davidson", role = c("aut"),
-                     email = "davids14@illinois.edu"),
-             person("Rob", "Kooper", role = c("aut"),
-                     email = "kooper@illinois.edu"),
-             person("Shawn", "Serbin", role = c("aut"),
-                     email = "sserbin@bnl.gov"),
-             person("Ankur", "Desai", role = c("aut"),
-                     email = "desai@aos.wisc.edu"),
-             person("James", "Simkins", role = c("aut"),
-                     email = "jsimkins2@wisc.edu"),
-             person("Chris", "Black", role = c("aut"),
-                     email = "chris@ckblack.org"),
-             person("Istem", "Fer", role = c("aut"),
-                     email = "istem.fer@fmi.fi"),
-             person("Hamze", "Dookohaki", role = c("aut"),
-                     email = "hamzed@illinois.edu"),
-             person("Alexey", "Shiklomanov", role = c("aut"),
-                     email = "alexey.shiklomanov@pnnl.gov"),
-             person("Elizabeth", "Cowdery", role = c("aut"),
-                     email = "ecowdery@bu.edu"),
-             person("Ann", "Raiho", role = c("aut"),
-                     email = "araiho@nd.edu"),
-             person("Tess", "McCabe", role = c("aut"),
-                     email = "tmccabe@bu.edu"),
-             person("Tony", "Gardella", role = c("aut"),
-                     email = "tonygard@bu.edu"),
-             person("University of Illinois, NCSA", role = c("cph")))
-Description: The Predictive Ecosystem Carbon Analyzer
-    (PEcAn) is a scientific workflow management tool that
-    is designed to simplify the management of model
-    parameterization, execution, and analysis. The goal of
-    PEcAn is to streamline the interaction between data and
-    models, and to improve the efficacy of scientific
-    investigation.
+Authors@R: c(
+    person("Mike", "Dietze", , "dietze@bu.edu", role = "aut"),
+    person("David", "LeBauer", , "dlebauer@email.arizona.edu", role = c("aut", "cre")),
+    person("Xiaohui", "Feng", , "feng22@illinois.edu", role = "aut"),
+    person("Dan", "Wang", role = "aut"),
+    person("Carl", "Davidson", , "davids14@illinois.edu", role = "aut"),
+    person("Rob", "Kooper", , "kooper@illinois.edu", role = "aut"),
+    person("Shawn", "Serbin", , "sserbin@bnl.gov", role = "aut"),
+    person("Ankur", "Desai", , "desai@aos.wisc.edu", role = "aut"),
+    person("James", "Simkins", , "jsimkins2@wisc.edu", role = "aut"),
+    person("Chris", "Black", , "chris@ckblack.org", role = "aut"),
+    person("Istem", "Fer", , "istem.fer@fmi.fi", role = "aut"),
+    person("Hamze", "Dookohaki", , "hamzed@illinois.edu", role = "aut"),
+    person("Alexey", "Shiklomanov", , "alexey.shiklomanov@pnnl.gov", role = "aut"),
+    person("Elizabeth", "Cowdery", , "ecowdery@bu.edu", role = "aut"),
+    person("Ann", "Raiho", , "araiho@nd.edu", role = "aut"),
+    person("Tess", "McCabe", , "tmccabe@bu.edu", role = "aut"),
+    person("Tony", "Gardella", , "tonygard@bu.edu", role = "aut"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
+Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a
+    scientific workflow management tool that is designed to simplify the
+    management of model parameterization, execution, and analysis. The
+    goal of PEcAn is to streamline the interaction between data and
+    models, and to improve the efficacy of scientific investigation.
+License: BSD_3_clause + file LICENSE
 Depends:
-    PEcAn.DB,
-    PEcAn.settings,
-    PEcAn.MA,
-    PEcAn.logger,
-    PEcAn.utils,
-    PEcAn.uncertainty,
+    PEcAn.assim.batch,
+    PEcAn.benchmark,
     PEcAn.data.atmosphere,
     PEcAn.data.land,
     PEcAn.data.remote,
-    PEcAn.assim.batch,
+    PEcAn.DB,
     PEcAn.emulator,
+    PEcAn.logger,
+    PEcAn.MA,
     PEcAn.priors,
-    PEcAn.benchmark,
     PEcAn.remote,
+    PEcAn.settings,
+    PEcAn.uncertainty,
+    PEcAn.utils,
     PEcAn.workflow
 Imports:
     utils
 Suggests:
     mockery,
-    PEcAn.ED2,
-    PEcAn.SIPNET,
+    PEcAn.allometry,
     PEcAn.BIOCRO,
     PEcAn.DALEC,
+    PEcAn.ED2,
     PEcAn.LINKAGES,
-    PEcAn.allometry,
     PEcAn.photosynthesis,
+    PEcAn.SIPNET,
     sessioninfo,
     testthat
-License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyData: true
 Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

@@ -1,45 +1,42 @@
-Package: PEcAn.data.land
 Type: Package
+Package: PEcAn.data.land
 Title: PEcAn Functions Used for Ecological Forecasts and Reanalysis
 Version: 1.7.2.9000
 Date: 2021-10-04
-Authors@R: c(person("Mike", "Dietze", role = c("aut", "cre"),
-                     email = "dietze@bu.edu"),
-             person("David", "LeBauer", role = c("aut"),
-                     email = "dlebauer@email.arizona.edu"),
-             person("Xiaohui", "Feng", role = c("ctb"),
-                     email = "feng22@illinois.edu"),
-             person("Dan", "Wang", role = c("ctb")),
-             person("Carl", "Davidson", role = c("ctb"),
-                     email = "davids14@illinois.edu"),
-             person("Rob", "Kooper", role = c("ctb"),
-                     email = "kooper@illinois.edu"),
-             person("Alexey", "Shiklomanov", role = c("ctb"),
-                     email = "alexey.shiklomanov@pnnl.gov"),
-             person("University of Illinois, NCSA", role = c("cph")))
-Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a scientific
-    workflow management tool that is designed to simplify the management of
-    model parameterization, execution, and analysis. The goal of PECAn is to
-    streamline the interaction between data and models, and to improve the
-    efficacy of scientific investigation.
-Depends: R (>= 3.5.0)
+Authors@R: c(
+    person("Mike", "Dietze", , "dietze@bu.edu", role = c("aut", "cre")),
+    person("David", "LeBauer", , "dlebauer@email.arizona.edu", role = "aut"),
+    person("Xiaohui", "Feng", , "feng22@illinois.edu", role = "ctb"),
+    person("Dan", "Wang", role = "ctb"),
+    person("Carl", "Davidson", , "davids14@illinois.edu", role = "ctb"),
+    person("Rob", "Kooper", , "kooper@illinois.edu", role = "ctb"),
+    person("Alexey", "Shiklomanov", , "alexey.shiklomanov@pnnl.gov", role = "ctb"),
+    person("University of Illinois, NCSA", role = "cph")
+  )
+Description: The Predictive Ecosystem Carbon Analyzer (PEcAn) is a
+    scientific workflow management tool that is designed to simplify the
+    management of model parameterization, execution, and analysis. The
+    goal of PECAn is to streamline the interaction between data and
+    models, and to improve the efficacy of scientific investigation.
+License: BSD_3_clause + file LICENSE
+Depends: 
+    R (>= 3.5.0)
 Imports:
     coda,
     curl,
     datapack,
-    dplyr,
     dplR,
+    dplyr,
     fs,
-    future,
     furrr,
+    future,
     httr,
     lubridate,
     magrittr,
     mvtnorm,
     ncdf4 (>= 1.15),
-    neonUtilities,
     neonstore,
-    swfscMisc,
+    neonUtilities,
     PEcAn.benchmark,
     PEcAn.data.atmosphere,
     PEcAn.DB,
@@ -54,19 +51,19 @@ Imports:
     sirt,
     sp,
     stringr,
+    swfscMisc,
     terra,
     tidyr,
     tidyselect,
     traits,
-    XML (>= 3.98-1.4)      
+    XML (>= 3.98-1.4)
 Suggests:
     dataone,
     PEcAn.settings,
-    redland,
     raster,
+    redland,
     testthat (>= 1.0.2)
-License: BSD_3_clause + file LICENSE
 Copyright: Authors
-LazyData: true
 Encoding: UTF-8
+LazyData: true
 RoxygenNote: 7.2.3
