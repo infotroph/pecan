@@ -22,7 +22,7 @@ get_installed_path <- function(src_dir) {
 # (targets stops early when it detects cycles)
 list_pecan_deps <- function(path) {
 	deps <- remotes::local_package_deps(path)
-	deps[grepl("^PEcAn.", deps)]
+	deps[grepl("^PEcAn", deps)]
 }
 
 list_dep_targets <- function(path) {
