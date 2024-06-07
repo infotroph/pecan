@@ -129,16 +129,27 @@ if [ "${DEPEND}" == "build" ]; then
         --tag pecan/depends:${IMAGE_VERSION} \
         docker/depends
 elif [ "${UPDATE_DEPENDS_FROM_TAG}" != "" ]; then
-    echo "# Attempting to update from existing pecan/depends:${UPDATE_DEPENDS_FROM_TAG}."
-    echo "# This is experimental. if it fails, please instead use"
-    echo "# 'DEPEND=build' to start from a known clean state."
-    ${DEBUG} docker build \
+    if $(docker manifest inspect pecan/depends:${UPDATE_DEPENDS_FROM_TAG} > /dev/null 2>&1); then
+        echo "# Attempting to update from existing pecan/depends:${UPDATE_DEPENDS_FROM_TAG}."
+        echo "# This is experimental. if it fails, please instead use"
+        echo "# 'DEPEND=build' to start from a known clean state."
+        ${DEBUG} docker build \
+            --pull \
+            --secret id=github_token,env=GITHUB_PAT \
+            --build-arg FROM_IMAGE="pecan/depends" \
+            --build-arg R_VERSION=${UPDATE_DEPENDS_FROM_TAG} ${GITHUB_WORKFLOW_ARG} \
+            --tag pecan/depends:${IMAGE_VERSION} \
+            docker/depends
+    else
+        echo "# Update of depends requested, but pecan/depends:${UPDATE_DEPENDS_FROM_TAG} does not exist."
+        echo "# Building from scratch instead."
+        ${DEBUG} docker build \
         --pull \
         --secret id=github_token,env=GITHUB_PAT \
-        --build-arg FROM_IMAGE="pecan/depends" \
-        --build-arg R_VERSION=${UPDATE_DEPENDS_FROM_TAG} ${GITHUB_WORKFLOW_ARG} \
+        --build-arg R_VERSION=${R_VERSION} ${GITHUB_WORKFLOW_ARG} \
         --tag pecan/depends:${IMAGE_VERSION} \
         docker/depends
+    fi
 else
     if [ "$( docker image ls -q pecan/depends:${IMAGE_VERSION} )" == "" ]; then
         if [ "${PECAN_GIT_BRANCH}" != "master" ]; then
