@@ -1,11 +1,9 @@
 #' met2model wrapper for SIPNET
 #'
 #' Reads weather data from CF-formatted NetCDFs and writes it in the `.clim`
-#' format expected by SIPNET: a 14-column tab-separated table with no headers.
+#' format expected by SIPNET: a 13-column tab-separated table with no headers.
 #'
 #' The columns of the output file are:
-#'    * Grid index. Always 0 from this function; PEcAn configures SIPNET not to
-#'      use this.
 #'    * 4-digit year
 #'    * Day of year
 #'    * Hour of day
@@ -21,6 +19,14 @@
 #'    * Soil moisture (fraction of saturation).
 #'      Always  0.6 from this function; PEcAn configures SIPNET to calculate it
 #'      internally.
+#'
+#' If add_grid_loc is TRUE, the table has 14 columns: The 13 above,
+#' plus a new leftmost dummy column containing all zeroes.
+#' This is a grid location index that was needed by older versions of Sipnet
+#' and is ignored with a warning by new versions.
+#' Note that PEcAn has never used gridded simulations, and model support for
+#' them was removed from Sipnet >= v2.0.
+#'
 #'
 #' SIPNET does not allow missing values in its inputs. If the result contains
 #' NAs after conversion, no file is written and the process returns an error.
@@ -43,10 +49,13 @@
 #' @param verbose should the function be very verbose
 #' @param year.fragment the function should ignore whether or not the data is
 #'  stored as a set of complete years (such as for forecasts).
+#' @param add_grid_loc Add column of zeroes as an [unused!] spatial grid index?
+#'  Provided for backwards compatibility; Set to TRUE if you need the output to
+#'  be readable by Sipnet versions older than v2.0.
 #' @param ... Additional arguments, currently ignored
 #' @author Luke Dramko, Michael Dietze, Alexey Shiklomanov, Rob Kooper
 met2model.SIPNET <- function(in.path, in.prefix, outfolder, start_date, end_date, var.names = NULL,
-                             overwrite = FALSE, verbose = FALSE, year.fragment = FALSE, ...) {
+                             overwrite = FALSE, verbose = FALSE, year.fragment = FALSE, add_grid_loc = FALSE, ...) {
  
   if (verbose) {
     PEcAn.logger::logger.info("START met2model.SIPNET")
@@ -277,10 +286,12 @@ met2model.SIPNET <- function(in.path, in.prefix, outfolder, start_date, end_date
       next
     }
     
-    ## 0 YEAR DAY HOUR TIMESTEP AirT SoilT PAR PRECIP VPD VPD_Soil AirVP(e_a) WIND SoilM build data
+    ## [loc] YEAR DAY HOUR TIMESTEP AirT SoilT PAR PRECIP VPD VPD_Soil AirVP(e_a) WIND SoilM build data
+    # loc was previously required by Sipnet but always 0 in PEcAn runs,
+    # now accepted but ignored with a warning by Sipnet >= v2.0
     ## matrix
     n <- length(Tair)
-    tmp <- cbind(rep(0, n),
+    tmp <- cbind(if (add_grid_loc) rep(0, n),
                  yr[1:n],
                  doy[1:n],
                  hr[1:n],

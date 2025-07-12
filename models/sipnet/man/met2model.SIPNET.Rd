@@ -14,6 +14,7 @@ met2model.SIPNET(
   overwrite = FALSE,
   verbose = FALSE,
   year.fragment = FALSE,
+  add_grid_loc = FALSE,
   ...
 )
 }
@@ -39,6 +40,10 @@ met2model.SIPNET(
 \item{year.fragment}{the function should ignore whether or not the data is
 stored as a set of complete years (such as for forecasts).}
 
+\item{add_grid_loc}{Add column of zeroes as an \link{unused!} spatial grid index?
+Provided for backwards compatibility; Set to TRUE if you need the output to
+be readable by Sipnet versions older than v2.0.}
+
 \item{...}{Additional arguments, currently ignored}
 }
 \value{
@@ -46,13 +51,11 @@ a dataframe containing information about the files created
 }
 \description{
 Reads weather data from CF-formatted NetCDFs and writes it in the \code{.clim}
-format expected by SIPNET: a 14-column tab-separated table with no headers.
+format expected by SIPNET: a 13-column tab-separated table with no headers.
 }
 \details{
 The columns of the output file are:
 \itemize{
-\item Grid index. Always 0 from this function; PEcAn configures SIPNET not to
-use this.
 \item 4-digit year
 \item Day of year
 \item Hour of day
@@ -69,6 +72,13 @@ use this.
 Always  0.6 from this function; PEcAn configures SIPNET to calculate it
 internally.
 }
+
+If add_grid_loc is TRUE, the table has 14 columns: The 13 above,
+plus a new leftmost dummy column containing all zeroes.
+This is a grid location index that was needed by older versions of Sipnet
+and is ignored with a warning by new versions.
+Note that PEcAn has never used gridded simulations, and model support for
+them was removed from Sipnet >= v2.0.
 
 SIPNET does not allow missing values in its inputs. If the result contains
 NAs after conversion, no file is written and the process returns an error.
