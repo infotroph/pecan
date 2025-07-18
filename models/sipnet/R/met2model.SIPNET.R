@@ -1,7 +1,7 @@
 #' met2model wrapper for SIPNET
 #'
 #' Reads weather data from CF-formatted NetCDFs and writes it in the `.clim`
-#' format expected by SIPNET: a 13-column tab-separated table with no headers.
+#' format expected by SIPNET: a 12-column tab-separated table with no headers.
 #'
 #' The columns of the output file are:
 #'    * 4-digit year
@@ -16,17 +16,19 @@
 #'    * VPD of soil (Pa)
 #'    * Canopy vapor pressure (Pa)
 #'    * Wind speed (m/s)
-#'    * Soil moisture (fraction of saturation).
-#'      Always  0.6 from this function; PEcAn configures SIPNET to calculate it
-#'      internally.
 #'
-#' If add_grid_loc is TRUE, the table has 14 columns: The 13 above,
-#' plus a new leftmost dummy column containing all zeroes.
-#' This is a grid location index that was needed by older versions of Sipnet
-#' and is ignored with a warning by new versions.
-#' Note that PEcAn has never used gridded simulations, and model support for
-#' them was removed from Sipnet >= v2.0.
+#' If use_v1_format is TRUE, the table has 14 columns:
 #'
+#'  * column 1 is a spatial grid index, always set to 0
+#'  * columns 2-13 are the 12 described above
+#'  * column 14 is soil wetness as a fraction of saturation, always set to 0.6
+#'
+#' These were needed by older versions of Sipnet, but never had any effect on
+#'  PEcAn runs: PEcAn never used gridded runs and always configured Sipnet to
+#'  calculate soil moistuer internally.
+#' Model support for both of these columns was removed from Sipnet >= v2.0.
+#' Newer versions now accept 14-column files, but ignore the first
+#'  and last columns with a warning.
 #'
 #' SIPNET does not allow missing values in its inputs. If the result contains
 #' NAs after conversion, no file is written and the process returns an error.
@@ -44,19 +46,28 @@
 #'  (will only use the year part of the date)
 #' @param end_date the end date of the data to be downloaded
 #'  (will only use the year part of the date)
-#' @param var.names character: list of variable names to be extracted. Default is NULL.
+#' @param var.names character: list of variable names to be extracted.
+#'  Default NULL uses all variables from input file
 #' @param overwrite should existing files be overwritten
 #' @param verbose should the function be very verbose
 #' @param year.fragment the function should ignore whether or not the data is
 #'  stored as a set of complete years (such as for forecasts).
-#' @param add_grid_loc Add column of zeroes as an [unused!] spatial grid index?
-#'  Provided for backwards compatibility; Set to TRUE if you need the output to
-#'  be readable by Sipnet versions older than v2.0.
+#' @param use_v1_format Add location and soil wetness columns expected by
+#'  Sipnet < v2.0? See details
 #' @param ... Additional arguments, currently ignored
 #' @author Luke Dramko, Michael Dietze, Alexey Shiklomanov, Rob Kooper
-met2model.SIPNET <- function(in.path, in.prefix, outfolder, start_date, end_date, var.names = NULL,
-                             overwrite = FALSE, verbose = FALSE, year.fragment = FALSE, add_grid_loc = FALSE, ...) {
- 
+met2model.SIPNET <- function(in.path,
+                             in.prefix,
+                             outfolder,
+                             start_date,
+                             end_date,
+                             var.names = NULL,
+                             overwrite = FALSE,
+                             verbose = FALSE,
+                             year.fragment = FALSE,
+                             use_v1_format = FALSE,
+                             ...) {
+
   if (verbose) {
     PEcAn.logger::logger.info("START met2model.SIPNET")
   }
@@ -285,27 +296,29 @@ met2model.SIPNET <- function(in.path, in.prefix, outfolder, start_date, end_date
       PEcAn.logger::logger.info("Skipping to next year")
       next
     }
-    
-    ## [loc] YEAR DAY HOUR TIMESTEP AirT SoilT PAR PRECIP VPD VPD_Soil AirVP(e_a) WIND SoilM build data
-    # loc was previously required by Sipnet but always 0 in PEcAn runs,
+
+    ## [loc] YEAR DAY HOUR TIMESTEP AirT SoilT PAR PRECIP VPD VPD_Soil AirVP(e_a) WIND [SoilM]
+    # loc and SoilM were previously required by Sipnet but never used by PEcAn,
     # now accepted but ignored with a warning by Sipnet >= v2.0
     ## matrix
     n <- length(Tair)
-    tmp <- cbind(if (add_grid_loc) rep(0, n),
-                 yr[1:n],
-                 doy[1:n],
-                 hr[1:n],
-                 rep(dt / 86400, n),
-                 Tair_C,
-                 soilT,
-                 PAR * dt,  # mol/m2/hr
-                 Rain * dt, # converts from mm/s to mm
-                 VPD,
-                 VPDsoil,
-                 e_a,
-                 ws, # wind
-                 rep(0.6, n)) # put soil water at a constant. Don't use, set SIPNET to MODEL_WATER = 1
-    
+    tmp <- cbind(
+      if (use_v1_format) rep(0, n),
+      yr[1:n],
+      doy[1:n],
+      hr[1:n],
+      rep(dt / 86400, n),
+      Tair_C,
+      soilT,
+      PAR * dt,  # mol/m2/hr
+      Rain * dt, # converts from mm/s to mm
+      VPD,
+      VPDsoil,
+      e_a,
+      ws, # wind
+      if (use_v1_format) rep(0.6, n) # put soil water at a constant. Don't use, set SIPNET to MODEL_WATER = 1
+    )
+
     ## quick error check, sometimes get a NA in the last hr
     hr.na <- which(is.na(tmp[, 4]))
     if (length(hr.na) > 0) {

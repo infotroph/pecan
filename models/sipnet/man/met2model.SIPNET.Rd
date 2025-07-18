@@ -14,7 +14,7 @@ met2model.SIPNET(
   overwrite = FALSE,
   verbose = FALSE,
   year.fragment = FALSE,
-  add_grid_loc = FALSE,
+  use_v1_format = FALSE,
   ...
 )
 }
@@ -31,7 +31,8 @@ met2model.SIPNET(
 \item{end_date}{the end date of the data to be downloaded
 (will only use the year part of the date)}
 
-\item{var.names}{character: list of variable names to be extracted. Default is NULL.}
+\item{var.names}{character: list of variable names to be extracted.
+Default NULL uses all variables from input file}
 
 \item{overwrite}{should existing files be overwritten}
 
@@ -40,9 +41,8 @@ met2model.SIPNET(
 \item{year.fragment}{the function should ignore whether or not the data is
 stored as a set of complete years (such as for forecasts).}
 
-\item{add_grid_loc}{Add column of zeroes as an \link{unused!} spatial grid index?
-Provided for backwards compatibility; Set to TRUE if you need the output to
-be readable by Sipnet versions older than v2.0.}
+\item{use_v1_format}{Add location and soil wetness columns expected by
+Sipnet < v2.0? See details}
 
 \item{...}{Additional arguments, currently ignored}
 }
@@ -51,7 +51,7 @@ a dataframe containing information about the files created
 }
 \description{
 Reads weather data from CF-formatted NetCDFs and writes it in the \code{.clim}
-format expected by SIPNET: a 13-column tab-separated table with no headers.
+format expected by SIPNET: a 12-column tab-separated table with no headers.
 }
 \details{
 The columns of the output file are:
@@ -68,17 +68,21 @@ The columns of the output file are:
 \item VPD of soil (Pa)
 \item Canopy vapor pressure (Pa)
 \item Wind speed (m/s)
-\item Soil moisture (fraction of saturation).
-Always  0.6 from this function; PEcAn configures SIPNET to calculate it
-internally.
 }
 
-If add_grid_loc is TRUE, the table has 14 columns: The 13 above,
-plus a new leftmost dummy column containing all zeroes.
-This is a grid location index that was needed by older versions of Sipnet
-and is ignored with a warning by new versions.
-Note that PEcAn has never used gridded simulations, and model support for
-them was removed from Sipnet >= v2.0.
+If use_v1_format is TRUE, the table has 14 columns:
+\itemize{
+\item column 1 is a spatial grid index, always set to 0
+\item columns 2-13 are the 12 described above
+\item column 14 is soil wetness as a fraction of saturation, always set to 0.6
+}
+
+These were needed by older versions of Sipnet, but never had any effect on
+PEcAn runs: PEcAn never used gridded runs and always configured Sipnet to
+calculate soil moistuer internally.
+Model support for both of these columns was removed from Sipnet >= v2.0.
+Newer versions now accept 14-column files, but ignore the first
+and last columns with a warning.
 
 SIPNET does not allow missing values in its inputs. If the result contains
 NAs after conversion, no file is written and the process returns an error.
