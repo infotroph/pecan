@@ -87,6 +87,40 @@ papply <- function(settings, fn, ..., stop.on.error = FALSE) {
       }
     }
 
+    do_fn <- function(s, i, n, fn, ...) {
+      PEcAn.logger::logger.debug(
+        "papply executing ", deparse(substitute(fn)),
+        "on element", i, "of", n, ".")
+      if (all(grepl("settings", names(s$run)))) s$run <- s$run[[i]]
+      res <- try(fn(s, ...), silent = TRUE) %||% list(NULL)
+      err <- NULL
+      if (stop.on.error && inherits(res, "try-error")) {
+        PEcAn.logger::logger.error(
+          "papply threw an error for element ", i, " of ", n,
+          ", and is aborting since stop.on.error=TRUE. Message was: '",
+          as.character(res), "'")
+        stop()
+      }
+
+      res
+    }
+
+    result <- mapply(settings, seq_along(settings), FUN = do_fn, MoreArgs = list(n = length(settings, fn = fn, ...)))
+
+    errs <- sapply(result, inherits, "try-error")
+    errors <- paste0(
+      "papply threw an error for element ",
+      which(errs), " of ", length(settings),
+      ", but is continuing since stop.on.error=FALSE",
+      " (there will be no results for this element, however).",
+      " Message was:", as.character(result[errs])
+    )
+    # set results null for errored elements
+    # (need list(NULL) to avoid removing the whole list entry)
+    result[errs] <- list(NULL)
+
+
+
     if (all(sapply(result, is.Settings))) {
       result <- MultiSettings(result)
     }
