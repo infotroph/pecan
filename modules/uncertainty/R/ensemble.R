@@ -175,14 +175,16 @@ get.ensemble.samples <- function( ensemble.size, pft.samples, env.samples,
 
           ensemble.samples[[pft.i]][, trait.i] <- stats::quantile(pft.samples[[pft.i]][[trait.i]],
                                                                   random.samples[, col.i])
-          sampled.indices[[pft.i]][, trait.i] <- sapply(sampled.values,
-                                                        function(val) {which.min(abs(trait.values - val)) })
+          sampled.indices[[pft.i]][, trait.i] <- sapply(
+            sampled.values,
+            function(val) which.min(abs(trait.values - val))
+          )
         }
       }
       ensemble.samples[[pft.i]] <- as.data.frame(ensemble.samples[[pft.i]])
       colnames(ensemble.samples[[pft.i]]) <- names(pft.samples[[pft.i]])
 
-    }  #end pft
+    } # end pft
     names(ensemble.samples) <- names(pft.samples)
     ans <- ensemble.samples
   }
@@ -345,7 +347,7 @@ write.ensemble.configs <- function(input_design , ensemble.size, defaults, ensem
         dplyr::filter(.data$required == TRUE) %>%
         dplyr::pull("tag")
     } else {
-      required_tags <- c("met","parameters")
+      required_tags <- c("met", "parameters")
     }
 
     #now looking into the xml
@@ -363,10 +365,11 @@ write.ensemble.configs <- function(input_design , ensemble.size, defaults, ensem
         )
       }
     }
-    # if there is a tag required by the model but it is not specified in the xml then I replicate n times the first element
+    # if there is a tag required by the model but it is not specified in the xml
+    # then I replicate n times the first element
     required_tags %>%
       purrr::walk(function(r_tag) {
-        if (is.null(samples[[r_tag]]) && r_tag != "parameters") {
+        if (is.null(samples[[r_tag]]) & r_tag != "parameters") {
           samples[[r_tag]]$samples <<- rep(settings$run$inputs[[tolower(r_tag)]]$path[1], ensemble.size)
         }
       })
@@ -403,10 +406,12 @@ write.ensemble.configs <- function(input_design , ensemble.size, defaults, ensem
 
     # if no ensemble piece was in the xml I replicate n times the first element in params
     if ( is.null(samp$parameters) && nrow(ensemble.samples[[1]]) != ensemble.size ) {
-      samples$parameters$samples <- ensemble.samples %>% purrr::map(~.x[rep(1, ensemble.size) , ])
+      samples$parameters$samples <- ensemble.samples %>%
+        purrr::map(~.x[rep(1, ensemble.size) , ])
     }
-    # This where we handle the parameters - ensemble.samples is already generated in run.write.config and it's sent to this function as arg -
-    if ( is.null(samples$parameters$samples) ) {
+    # This where we handle the parameters - ensemble.samples is
+    # already generated in run.write.config and it's sent to this function as arg -
+    if (is.null(samples$parameters$samples)) {
       samples$parameters$samples <- ensemble.samples
     }
     #------------------------End of generating ensembles-----------------------------------
@@ -562,10 +567,11 @@ write.ensemble.configs <- function(input_design , ensemble.size, defaults, ensem
       defined.pfts <- settings$pfts %>% purrr::map('name') %>% unlist %>% as.character
       # subset ensemble samples based on the pfts that are specified in the site and they are also sampled from.
       if (length(which(site.pfts.vec %in% defined.pfts)) > 0 ) {
-        new.params <- new.params %>% purrr::map(~list(.x[[which(site.pfts.vec %in% defined.pfts)]],restart = .x$restart))
+        new.params <- new.params %>%
+          purrr::map(~list(.x[[which(site.pfts.vec %in% defined.pfts)]], restart = .x$restart))
       }
       # warn if there is a pft specified in the site but it's not defined in the pecan xml.
-      if (length(which(!(site.pfts.vec %in% defined.pfts)))>0) {
+      if (length(which(!(site.pfts.vec %in% defined.pfts))) > 0) {
         PEcAn.logger::logger.warn(
           "The following pfts are specified for the siteid ",
           settings$run$site$id ,
@@ -576,7 +582,7 @@ write.ensemble.configs <- function(input_design , ensemble.size, defaults, ensem
     }
 
     #if ensemble folders do not exist create them
-    for (j in 1:length(run.id)) {
+    for (j in seq_along(run.id)) {
       if (!file.exists(file.path(settings$rundir, run.id[[j]]))) {
         dir.create(file.path(settings$rundir, run.id[[j]]))
       }
@@ -602,7 +608,7 @@ write.ensemble.configs <- function(input_design , ensemble.size, defaults, ensem
                            new.state = new.state[i, ],
                            new.params = new.params[[i]], #new.params$`646`[[i]] for debugging
                            inputs = input_list,
-                           RENAME = rename)#for restart from previous model runs, not sharing the same outdir
+                           RENAME = rename) #for restart from previous model runs, not sharing the same outdir
       )
 
       manifest_df <- rbind(manifest_df, data.frame(
