@@ -1,17 +1,24 @@
-##' @title Preprocess Data for Downscaling
-##' @name SDA_downscale_preprocess
-##' @author Sambhav Dixit
-##' @author David LeBauer
-##'
-##' @param ensemble_data List where each element is a data.frame indexed by date.
-##' @param site_coords A data.frame with `lon` and `lat` columns, or an sf object with point geometries.
-##' @param date Date. The date for the run, which must occur within `ensemble_data`.
-##' @param carbon_pool Character. Carbon pool of interest. Name must match a column in `ensemble_data`.
-##' @details This function ensures that the specified date and carbon pool are present in the input data. It also checks the validity of the site coordinates and requires site coordinates and carbon data to have the same number of rows.
-##'
-##' @description This function checks the input data, ensuring that the required date and carbon pool exist, and that the site coordinates are valid.
-##'
-##' @return A list containing the input data, cleaned site coordinates, and preprocessed carbon data.
+#' Preprocess Data for Downscaling
+#'
+#' Checks the input data, ensuring that the required date
+#' and carbon pool exist, and that the site coordinates are valid.
+#'
+#' This function ensures that the specified date and carbon pool are present in
+#' the input data. It also checks the validity of the site coordinates and
+#' requires site coordinates and carbon data to have the same number of rows.
+#'
+#' @author Sambhav Dixit
+#' @author David LeBauer
+#'
+#' @param ensemble_data List where each element is a data.frame indexed by date.
+#' @param site_coords A data.frame with `lon` and `lat` columns, or an sf object
+#'  with point geometries.
+#' @param date Date. The date for the run, which must occur within `ensemble_data`.
+#' @param carbon_pool Character. Carbon pool of interest.
+#'  Name must match a column in `ensemble_data`.
+#'
+#' @return A list containing the input data, cleaned site coordinates,
+#'   and preprocessed carbon data.
 
 SDA_downscale_preprocess <- function(ensemble_data, site_coords, date, carbon_pool) {
   input_data <- ensemble_data
@@ -70,20 +77,31 @@ SDA_downscale_preprocess <- function(ensemble_data, site_coords, date, carbon_po
   return(list(input_data = input_data, site_coordinates = site_coordinates, carbon_data = carbon_data))
 }
 
-##' @title SDA Downscale Function
-##' @name SDA_downscale
-##' @author Joshua Ploshay, Sambhav Dixit
-##'
-##' @param preprocessed List. Preprocessed data returned as an output from the SDA_downscale_preprocess function.
-##' @param carbon_pool Character. Carbon pool of interest. Name must match the carbon pool in `preprocessed`.
-##' @param covariates SpatRaster stack or sf object. Used as predictors in downscaling. If providing a raster stack, layers should be named. If providing an sf object, predictor attributes should be present.
-##' @param model_type Character. Either "rf" for Random Forest or "cnn" for Convolutional Neural Network. Default is Random Forest.
-##' @param seed Numeric or NULL. Optional seed for random number generation. Default is NULL.
-##' @details This function will downscale forecast data to unmodeled locations using covariates and site locations
-##'
-##' @description This function uses either Random Forest or Convolutional Neural Network model based on the model_type parameter.
-##'
-##' @return A list containing the training and testing data sets, models, predicted maps for each ensemble member, and predictions for testing data.
+
+#' SDA Downscale Function
+#'
+#' Uses either Random Forest or Convolutional Neural Network model based on the
+#' model_type parameter.
+#'
+#' This function will downscale forecast data to unmodeled locations using
+#' covariates and site locations
+#'
+#' @author Joshua Ploshay, Sambhav Dixit
+#'
+#' @param preprocessed List. Preprocessed data returned as an output from the 
+#'  SDA_downscale_preprocess function.
+#' @param carbon_pool Character. Carbon pool of interest.
+#'  Name must match the carbon pool in `preprocessed`.
+#' @param covariates SpatRaster stack or sf object. Used as predictors in downscaling.
+#'  If providing a raster stack, layers should be named.
+#'  If providing an sf object, predictor attributes should be present.
+#' @param model_type Character. Either "rf" for Random Forest or "cnn" for
+#'  Convolutional Neural Network. Default is Random Forest.
+#' @param seed Numeric or NULL. Optional seed for random number generation.
+#'  Default is NULL.
+#'
+#' @return A list containing the training and testing data sets, models,
+#'  predicted maps for each ensemble member, and predictions for testing data.
 
 SDA_downscale <- function(preprocessed, carbon_pool, covariates, model_type = c("rf", "cnn"), seed = NULL) {
   model_type <- match.arg(model_type)
@@ -142,6 +160,7 @@ SDA_downscale <- function(preprocessed, carbon_pool, covariates, model_type = c(
   models <- list()
   maps <- list()
   predictions <- list()
+
 # TODO: Consider extracting the RF and CNN branches into dedicated helper functions.
   if (model_type == "rf") {
     for (i in seq_along(carbon_data)) {
@@ -319,18 +338,29 @@ SDA_downscale <- function(preprocessed, carbon_pool, covariates, model_type = c(
   return(downscale_output)
 }
 
-##' @title Calculate Metrics for Downscaling Results
-##' @name SDA_downscale_metrics
-##' @author Sambhav Dixit
-##'
-##' @param downscale_output List. Output from the SDA_downscale function, containing data, models, maps, and predictions for each ensemble.
-##' @param carbon_pool Character. Name of the carbon pool used in the downscaling process.
-##'
-##' @details This function calculates performance metrics for the downscaling results. It computes Mean Squared Error (MSE), Mean Absolute Error (MAE), and R-squared for each ensemble. The function uses the actual values from the testing data and the predictions generated during the downscaling process.
-##'
-##' @description This function takes the output from the SDA_downscale function and computes various performance metrics for each ensemble. It provides a way to evaluate the accuracy of the downscaling results without modifying the main downscaling function.
-##'
-##' @return A list of metrics for each ensemble, where each element contains MAE , MSE ,R_squared ,actual values from testing data and predicted values for the testing data
+#' Calculate Metrics for Downscaling Results
+#'
+#' Takes the output from the SDA_downscale function and computes various
+#' performance metrics for each ensemble. It provides a way to evaluate the
+#' accuracy of the downscaling results without modifying the main downscaling
+#' function.
+#'
+#' This function calculates performance metrics for the downscaling results.
+#' It computes Mean Squared Error (MSE), Mean Absolute Error (MAE),
+#' and R-squared for each ensemble.
+#' The function uses the actual values from the testing data and the predictions
+#' generated during the downscaling process.
+#'
+#' @author Sambhav Dixit
+#'
+#' @param downscale_output List. Output from the SDA_downscale function,
+#'  containing data, models, maps, and predictions for each ensemble.
+#' @param carbon_pool Character. Name of the carbon pool used in the downscaling
+#'  process.
+#'
+#'
+#'
+#' @return A list of metrics for each ensemble, where each element contains MAE , MSE ,R_squared ,actual values from testing data and predicted values for the testing data
 
 SDA_downscale_metrics <- function(downscale_output, carbon_pool) {
   metrics <- list()
