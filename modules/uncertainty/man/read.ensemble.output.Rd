@@ -2,7 +2,6 @@
 % Please edit documentation in R/ensemble.R
 \name{read.ensemble.output}
 \alias{read.ensemble.output}
-\title{Reads output from model ensemble}
 \usage{
 read.ensemble.output(
   ensemble.size,
