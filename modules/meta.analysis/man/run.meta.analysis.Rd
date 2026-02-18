@@ -28,7 +28,8 @@ run.meta.analysis(
 
 \item{dbfiles}{(character) directory where previous results are found}
 
-\item{database}{database connection parameters}
+\item{database}{database connection parameters.
+If NULL, posteriors will not be recorded to the database.}
 
 \item{use_ghs}{(boolean; default = TRUE) If TRUE, do not exclude greenhouse data}
 
