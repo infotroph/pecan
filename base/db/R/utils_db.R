@@ -205,8 +205,18 @@ db.open <- function(params) {
   }
 
   if (driver == "PostgreSQL") {
+    if (! requireNamespace("RPostgreSQL", quietly = TRUE)) {
+      PEcAn.logger::logger.severe(
+        "driver 'PostgreSQL' requires package `RPostgreSQL`"
+      )
+    }
     drv <- RPostgreSQL::PostgreSQL()
   } else if (driver == "Postgres") {
+    if (! requireNamespace("RPostgres", quietly = TRUE)) {
+      PEcAn.logger::logger.severe(
+        "driver 'Postgres' requires package `RPostgres`"
+      )
+    }
     drv <- RPostgres::Postgres()
   }
 
