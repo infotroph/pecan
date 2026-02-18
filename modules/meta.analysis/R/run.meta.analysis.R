@@ -287,16 +287,24 @@ run.meta.analysis.pft <- function(pft, iterations, random = TRUE, threshold = 1.
   file.symlink(dist_MA_path, dist_path)
   
   ### save and store in database all results except those that were there already
-  for (file in list.files(path = pft$outdir)) {
-    # Skip file if it was there already, or if it's a symlink (like the post.distns.Rdata link above)
-    if (file %in% old.files || nchar(Sys.readlink(file.path(pft$outdir, file))) > 0) {
-      next
+  if (!is.null(dbcon)) {
+    # create path where to store files
+    pathname <- file.path(dbfiles, "posterior", pft$posteriorid)
+    dir.create(pathname, showWarnings = FALSE, recursive = TRUE)
+
+    for (file in list.files(path = pft$outdir)) {
+      # Skip file if it was there already, or if it's a symlink (like the post.distns.Rdata link above)
+      if (file %in% old.files || nchar(Sys.readlink(file.path(pft$outdir, file))) > 0) {
+        next
+      }
+      filename <- file.path(pathname, file)
+      file.copy(file.path(pft$outdir, file), filename)
+      PEcAn.DB::dbfile.insert(pathname, file, "Posterior", pft$posteriorid, dbcon)
     }
-    filename <- file.path(pathname, file)
-    file.copy(file.path(pft$outdir, file), filename)
-    PEcAn.DB::dbfile.insert(pathname, file, "Posterior", pft$posteriorid, dbcon)
   }
 } # run.meta.analysis.pft
+
+
 
 ##--------------------------------------------------------------------------------------------------##
 ##' Run meta analysis
@@ -308,8 +316,8 @@ run.meta.analysis.pft <- function(pft, iterations, random = TRUE, threshold = 1.
 ##' - settings$meta.analysis$update
 ##'
 ##' @param pfts the list of pfts to get traits for
-##' @param database database connection parameters
-##' @param update logical: Rerun the meta-analysis if result files already exist?
+##' @param database database connection parameters.
+##'   If NULL, posteriors will not be recorded to the database.
 ##' @param threshold Gelman-Rubin convergence diagnostic, passed on to
 ##'   \code{\link{pecan.ma.summary}}
 ##' @inheritParams meta_analysis_standalone
@@ -323,12 +331,25 @@ run.meta.analysis.pft <- function(pft, iterations, random = TRUE, threshold = 1.
 ##' @author Shawn Serbin, David LeBauer
 run.meta.analysis <- function(pfts, iterations, random = TRUE, threshold = 1.2, dbfiles, database, use_ghs = TRUE , update = FALSE) {
   # process all pfts
-  dbcon <- PEcAn.DB::db.open(database)
-  on.exit(PEcAn.DB::db.close(dbcon), add = TRUE)
+  if (!is.null(database)) {
+    dbcon <- PEcAn.DB::db.open(database)
+    on.exit(PEcAn.DB::db.close(dbcon), add = TRUE)
+  } else {
+    PEcAn.logger::logger.info(
+      "No database info provided to meta-analysis.",
+      "Not writing posterior to DB")
+    dbcon <- NULL
+  }
 
   result <- lapply(pfts, run.meta.analysis.pft, iterations = iterations, random = random, 
                    threshold = threshold, dbfiles = dbfiles, dbcon = dbcon, use_ghs = use_ghs, update = update)
 } # run.meta.analysis.R
+
+
+
+
+
+
 ## ==================================================================================================#
 #' Run meta-analysis on all PFTs in a (list of) PEcAn settings
 #'
@@ -375,6 +396,9 @@ runModule.run.meta.analysis <- function(settings) {
     stop("runModule.run.meta.analysis only works with Settings or MultiSettings")
   }
 } # runModule.run.meta.analysis
+
+
+
 
 ##--------------------------------------------------------------------------------------------------#
 ##' compare point to prior distribution
