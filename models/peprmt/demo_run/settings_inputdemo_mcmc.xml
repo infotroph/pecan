@@ -5,26 +5,65 @@
   <userid>-1</userid>
   <username></username>
  </info>
- <outdir>input_demo_out</outdir>
+ <outdir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_mcmc_out</outdir>
  <pfts>
   <pft>
    <name>default</name>
-   <posterior.files>data/pfts/default/post.distns.RData</posterior.files>
+   <posterior.files>data/pfts/default_marginal/post.distns.RData</posterior.files>
+   <outdir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_mcmc_out/pft/default</outdir>
+  </pft>
+  <pft>
+   <name>default_mcmc</name>
+   <posterior.files>data/pfts/default_mcmc/trait.mcmc.RData</posterior.files>
+   <outdir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_mcmc_out/pft/default_mcmc</outdir>
   </pft>
  </pfts>
  <ensemble>
-  <size>10</size>
-  <variable>TotSoilCarb</variable>
-  <samplingspace>
-   <parameters>
-    <method>uniform</method>
-   </parameters>
-   <met>
-    <method>sampling</method>
-   </met>
-  </samplingspace>
-  <start.year>2014</start.year>
-  <end.year>2024</end.year>
+  <site.US_EDN>
+   <size>10</size>
+   <variable>TotSoilCarb</variable>
+   <samplingspace>
+    <parameters>
+     <method>uniform</method>
+    </parameters>
+    <met>
+     <method>sampling</method>
+    </met>
+   </samplingspace>
+   <start.year>2014</start.year>
+   <end.year>2024</end.year>
+   <ensemble.id>c78188c3efe5e34d7395299d47b2ad65</ensemble.id>
+  </site.US_EDN>
+  <site.US_SRR>
+   <size>10</size>
+   <variable>TotSoilCarb</variable>
+   <samplingspace>
+    <parameters>
+     <method>uniform</method>
+    </parameters>
+    <met>
+     <method>sampling</method>
+    </met>
+   </samplingspace>
+   <start.year>2014</start.year>
+   <end.year>2024</end.year>
+   <ensemble.id>48a3ac7ad0db78dcb1973f027bf1164f</ensemble.id>
+  </site.US_SRR>
+  <site.US_DMG>
+   <size>10</size>
+   <variable>TotSoilCarb</variable>
+   <samplingspace>
+    <parameters>
+     <method>uniform</method>
+    </parameters>
+    <met>
+     <method>sampling</method>
+    </met>
+   </samplingspace>
+   <start.year>2014</start.year>
+   <end.year>2024</end.year>
+   <ensemble.id>31d5e4ec4eec2d5a0928cd71ed5db0b7</ensemble.id>
+  </site.US_DMG>
  </ensemble>
  <model>
   <id>peprmt_0_1_0</id>
@@ -37,10 +76,13 @@
   <site.US_EDN>
    <site>
     <id>US_EDN</id>
-    <name>Eden Landing</name>
+    <name>US_EDN</name>
     <lat>37.615</lat>
     <lon>-122.114</lon>
-    <site.pft>default</site.pft>
+    <site.pft>
+     <default_mcmc>default_mcmc</default_mcmc>
+     <default>default</default>
+    </site.pft>
     <met.start>2018-04-03</met.start>
     <met.end>2021-06-16</met.end>
     <ERA5_grid_cell>37.5N_122W</ERA5_grid_cell>
@@ -72,10 +114,13 @@
   <site.US_SRR>
    <site>
     <id>US_SRR</id>
-    <name>Rush Ranch</name>
+    <name>US_SRR</name>
     <lat>38.2</lat>
     <lon>-122.026</lon>
-    <site.pft>default</site.pft>
+    <site.pft>
+     <default_mcmc>default_mcmc</default_mcmc>
+     <default>default</default>
+    </site.pft>
     <met.start>2014-03-12</met.start>
     <met.end>2018-09-20</met.end>
     <ERA5_grid_cell>38N_122W</ERA5_grid_cell>
@@ -107,10 +152,13 @@
   <site.US_DMG>
    <site>
     <id>US_DMG</id>
-    <name>Dutch Slough</name>
+    <name>US_DMG</name>
     <lat>38.0015</lat>
     <lon>-121.6691</lon>
-    <site.pft>default</site.pft>
+    <site.pft>
+     <default_mcmc>default_mcmc</default_mcmc>
+     <default>default</default>
+    </site.pft>
     <met.start>2021-12-15</met.start>
     <met.end>2024-12-19</met.end>
     <ERA5_grid_cell>38N_121.5W</ERA5_grid_cell>
@@ -142,8 +190,21 @@
  </run>
  <host>
   <name>localhost</name>
+  <rundir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_mcmc_out/run</rundir>
+  <outdir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_mcmc_out/out</outdir>
  </host>
+ <settings.info>
+  <deprecated.settings.fixed>TRUE</deprecated.settings.fixed>
+  <settings.updated>TRUE</settings.updated>
+  <checked>TRUE</checked>
+ </settings.info>
+ <workflow>
+  <id>2026-05-04-12-23-39</id>
+ </workflow>
+ <rundir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_mcmc_out/run</rundir>
+ <modeloutdir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_mcmc_out/out</modeloutdir>
  <multisettings>
+  <multisettings>ensemble</multisettings>
   <multisettings>run</multisettings>
  </multisettings>
 </pecan>

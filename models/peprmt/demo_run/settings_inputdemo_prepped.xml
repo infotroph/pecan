@@ -5,11 +5,12 @@
   <userid>-1</userid>
   <username></username>
  </info>
- <outdir>input_demo_out</outdir>
+ <outdir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_out</outdir>
  <pfts>
   <pft>
    <name>default</name>
    <posterior.files>data/pfts/default/post.distns.RData</posterior.files>
+   <outdir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_out/pft/default</outdir>
   </pft>
  </pfts>
  <ensemble>
@@ -37,7 +38,7 @@
   <site.US_EDN>
    <site>
     <id>US_EDN</id>
-    <name>Eden Landing</name>
+    <name>US_EDN</name>
     <lat>37.615</lat>
     <lon>-122.114</lon>
     <site.pft>default</site.pft>
@@ -72,7 +73,7 @@
   <site.US_SRR>
    <site>
     <id>US_SRR</id>
-    <name>Rush Ranch</name>
+    <name>US_SRR</name>
     <lat>38.2</lat>
     <lon>-122.026</lon>
     <site.pft>default</site.pft>
@@ -107,7 +108,7 @@
   <site.US_DMG>
    <site>
     <id>US_DMG</id>
-    <name>Dutch Slough</name>
+    <name>US_DMG</name>
     <lat>38.0015</lat>
     <lon>-121.6691</lon>
     <site.pft>default</site.pft>
@@ -142,7 +143,19 @@
  </run>
  <host>
   <name>localhost</name>
+  <rundir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_out/run</rundir>
+  <outdir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_out/out</outdir>
  </host>
+ <settings.info>
+  <deprecated.settings.fixed>TRUE</deprecated.settings.fixed>
+  <settings.updated>TRUE</settings.updated>
+  <checked>TRUE</checked>
+ </settings.info>
+ <workflow>
+  <id>2026-05-04-12-23-07</id>
+ </workflow>
+ <rundir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_out/run</rundir>
+ <modeloutdir>/Users/jamesholmquist/GitHub/pecan/models/peprmt/demo_run/input_demo_out/out</modeloutdir>
  <multisettings>
   <multisettings>run</multisettings>
  </multisettings>
