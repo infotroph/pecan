@@ -120,7 +120,7 @@ There is an example `pecan.xml` that has been configured for this demonstration.
 This is how PEcAn loads the settings file:
 
 ```{r load-settings}
-settings_path <- here::here("models/peprmt/demo_run/settings_inputdemo.xml")
+settings_path <- here::here("pecan.xml")
 ```
 
 # Prepare and Validate Settings

@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 
 
-mkdir -p @OUTDIR@
+mkdir -p models/rcmem/demo_run/input_demo_out/out//ENS-00001-SERC
 
 # Redirect output
 exec 3>&1
-exec &> "$(realpath @OUTDIR@)/logfile.txt"
+exec &> "$(realpath models/rcmem/demo_run/input_demo_out/out//ENS-00001-SERC)/logfile.txt"
 
 # host specific setup
-@HOST_SETUP@
+
 
 # cdo setup
 # @CDO_SETUP@
 
 # Run RCMEM
 Rscript \
-  -e 'drivers <- readRDS(file.path("@RUNDIR@", "drivers_RCMEM.rds"))' \
-  -e 'parameters <- readRDS(file.path("@RUNDIR@", "parameters_RCMEM.rds"))' \
-  -e 'inits <- readRDS(file.path("@RUNDIR@", "inits_RCMEM.rds"))' \
+  -e 'drivers <- readRDS(file.path("models/rcmem/demo_run/input_demo_out/run//ENS-00001-SERC", "drivers_RCMEM.rds"))' \
+  -e 'parameters <- readRDS(file.path("models/rcmem/demo_run/input_demo_out/run//ENS-00001-SERC", "parameters_RCMEM.rds"))' \
+  -e 'inits <- readRDS(file.path("models/rcmem/demo_run/input_demo_out/run//ENS-00001-SERC", "inits_RCMEM.rds"))' \
   -e 'res <- rCMEM::runCohortMem2(run_spinup = 0, 
                            run_scenario = 1,
                            competition_function = 1,
@@ -52,16 +52,16 @@ Rscript \
                            rootPackingDensity = parameters$rootPackingDensity,
                            rootToShoot = parameters$rootToShoot)
   ' \
-  -e 'write.csv(res[[1]], file.path("@OUTDIR@", "scenario_out.csv"), row.names = FALSE)'\
-  -e 'write.csv(res[[2]], file.path("@OUTDIR@", "cohorts_out.csv"), row.names = FALSE)'\
-  -e 'write.csv(res[[3]], file.path("@OUTDIR@", "species_out.csv"), row.names = FALSE)'\
+  -e 'write.csv(res[[1]], file.path("models/rcmem/demo_run/input_demo_out/out//ENS-00001-SERC", "scenario_out.csv"), row.names = FALSE)'\
+  -e 'write.csv(res[[2]], file.path("models/rcmem/demo_run/input_demo_out/out//ENS-00001-SERC", "cohorts_out.csv"), row.names = FALSE)'\
+  -e 'write.csv(res[[3]], file.path("models/rcmem/demo_run/input_demo_out/out//ENS-00001-SERC", "species_out.csv"), row.names = FALSE)'\
 
 # convert output to PEcAn format
 Rscript -e 'PEcAn.RCMEM::model2netcdf.RCMEM(
-  outdir = "@OUTDIR@",
-  sitelat = @SITE_LAT@,
-  sitelon = @SITE_LON@,
-  start_date = "@START_DATE@",
-  end_date = "@END_DATE@",
-  delete_raw = @DELETE_RAW@
+  outdir = "models/rcmem/demo_run/input_demo_out/out//ENS-00001-SERC",
+  sitelat = 38.874544,
+  sitelon = -76.548628,
+  start_date = "1928",
+  end_date = "2018",
+  delete_raw = FALSE
 )'
