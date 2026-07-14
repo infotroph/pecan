@@ -9,7 +9,7 @@ For more information about this file see also [Keep a Changelog](http://keepacha
 ## Unreleased
 
 ### Added
-
+- Added PEcAn.RCMEM model, no demo run yet, just an initial pull request
 - Added `metric_Bias()` standalone function and registered `"BIAS"` in `PEcAn.benchmark` metric registry (#4062, #4059).
 - Added `metric_CRPS()` function and registry entry to `PEcAn.benchmark` for Continuous Ranked Probability Score (CRPS) ensemble skill evaluation against observations (#4062).
 - Added `efi_long_to_array()` helper function to `PEcAn.benchmark` for reshaping EFI long format model outputs into wide ensemble member matrices (#4062).
