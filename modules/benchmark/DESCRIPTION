@@ -38,13 +38,17 @@ Imports:
     rlang,
     SimilarityMeasures,
     stringr,
+    tidyr,
     tidyselect,
     units,
     utils,
     grDevices,
     XML (>= 3.98-1.4),
-    zoo 
+    zoo,
+    yaml
 Suggests:
+    quarto,
+    scoringRules,
     PEcAn.data.land,
     testthat (>= 2.0.0)
 License: BSD_3_clause + file LICENSE
