@@ -2,6 +2,7 @@
 % Please edit documentation in R/ensemble.R
 \name{read.ensemble.output}
 \alias{read.ensemble.output}
+\title{Reads output from model ensemble}
 \usage{
 read.ensemble.output(
   ensemble.size,
@@ -26,15 +27,16 @@ read.ensemble.output(
 
 \item{variable}{target variables for ensemble analysis}
 
-\item{ens.run.ids}{dataframe. Must contain a column named "id" giving the run IDs to be read.
-If NULL, will attempt to read IDs from a file named "samples.Rdata" in \code{pecandir}}
+\item{ens.run.ids}{dataframe. Must contain a column named "id" giving the
+run IDs to be read. If NULL, will attempt to read IDs from a file named
+"samples.Rdata" in \code{pecandir}}
 }
 \value{
 a list of ensemble model output
 }
 \description{
-Reads output for an ensemble of length specified by \code{ensemble.size} and bounded by \code{start.year}
-and \code{end.year}
+Reads output for an ensemble of length specified by \code{ensemble.size} and
+bounded by \code{start.year} and \code{end.year}
 }
 \author{
 Ryan Kelly, David LeBauer, Rob Kooper

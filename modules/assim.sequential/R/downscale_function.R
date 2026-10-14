@@ -88,12 +88,12 @@ SDA_downscale_preprocess <- function(ensemble_data, site_coords, date, carbon_po
 #'
 #' @author Joshua Ploshay, Sambhav Dixit
 #'
-#' @param preprocessed List. Preprocessed data returned as an output from the 
+#' @param preprocessed List. Preprocessed data returned as an output from the
 #'  SDA_downscale_preprocess function.
 #' @param carbon_pool Character. Carbon pool of interest.
 #'  Name must match the carbon pool in `preprocessed`.
-#' @param covariates SpatRaster stack or sf object. Used as predictors in downscaling.
-#'  If providing a raster stack, layers should be named.
+#' @param covariates SpatRaster stack or sf object. Used as predictors in
+#'  downscaling. If providing a raster stack, layers should be named.
 #'  If providing an sf object, predictor attributes should be present.
 #' @param model_type Character. Either "rf" for Random Forest or "cnn" for
 #'  Convolutional Neural Network. Default is Random Forest.

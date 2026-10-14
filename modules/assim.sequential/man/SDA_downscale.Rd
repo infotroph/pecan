@@ -16,9 +16,12 @@ SDA_downscale(
 \item{preprocessed}{List. Preprocessed data returned as an output from the
 SDA_downscale_preprocess function.}
 
-\item{carbon_pool}{Character. Carbon pool of interest. Name must match the carbon pool in `preprocessed`.}
+\item{carbon_pool}{Character. Carbon pool of interest.
+Name must match the carbon pool in `preprocessed`.}
 
-\item{covariates}{SpatRaster stack or sf object. Used as predictors in downscaling. If providing a raster stack, layers should be named. If providing an sf object, predictor attributes should be present.}
+\item{covariates}{SpatRaster stack or sf object. Used as predictors in
+downscaling. If providing a raster stack, layers should be named.
+If providing an sf object, predictor attributes should be present.}
 
 \item{model_type}{Character. Either "rf" for Random Forest or "cnn" for
 Convolutional Neural Network. Default is Random Forest.}
@@ -31,12 +34,12 @@ A list containing the training and testing data sets, models,
  predicted maps for each ensemble member, and predictions for testing data.
 }
 \description{
-This function uses either Random Forest or Convolutional Neural Network model
- based on the model_type parameter.
+Uses either Random Forest or Convolutional Neural Network model based on the
+model_type parameter.
 }
 \details{
 This function will downscale forecast data to unmodeled locations using
- covariates and site locations
+covariates and site locations
 }
 \author{
 Joshua Ploshay, Sambhav Dixit

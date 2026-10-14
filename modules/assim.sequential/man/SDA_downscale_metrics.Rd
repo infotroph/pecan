@@ -14,22 +14,20 @@ containing data, models, maps, and predictions for each ensemble.}
 process.}
 }
 \value{
-A list of metrics for each ensemble, where each element contains MAE,
- MSE ,R_squared ,actual values from testing data and predicted values for the
- testing data
+A list of metrics for each ensemble, where each element contains MAE , MSE ,R_squared ,actual values from testing data and predicted values for the testing data
 }
 \description{
 Takes the output from the SDA_downscale function and computes various
- performance metrics for each ensemble. It provides a way to evaluate the
- accuracy of the downscaling results without modifying the main downscaling
- function.
+performance metrics for each ensemble. It provides a way to evaluate the
+accuracy of the downscaling results without modifying the main downscaling
+function.
 }
 \details{
 This function calculates performance metrics for the downscaling results.
- It computes Mean Squared Error (MSE), Mean Absolute Error (MAE),
- and R-squared for each ensemble.
+It computes Mean Squared Error (MSE), Mean Absolute Error (MAE),
+and R-squared for each ensemble.
 The function uses the actual values from the testing data and the predictions
- generated during the downscaling process.
+generated during the downscaling process.
 }
 \author{
 Sambhav Dixit

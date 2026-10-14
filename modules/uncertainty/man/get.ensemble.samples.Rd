@@ -2,6 +2,7 @@
 % Please edit documentation in R/ensemble.R
 \name{get.ensemble.samples}
 \alias{get.ensemble.samples}
+\title{Get parameter values used in ensemble}
 \usage{
 get.ensemble.samples(
   ensemble.size,

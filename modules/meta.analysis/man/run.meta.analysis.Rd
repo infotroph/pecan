@@ -33,7 +33,8 @@ If NULL, posteriors will not be recorded to the database.}
 
 \item{use_ghs}{(boolean; default = TRUE) If TRUE, do not exclude greenhouse data}
 
-\item{update}{logical: Rerun the meta-analysis if result files already exist?}
+\item{update}{(boolean; default = FALSE) If \code{TRUE}, replace existing
+posteriors with new ones}
 
 \item{return_data}{(boolean; default = FALSE) If \code{TRUE}, attach \code{trait.mcmc},
 \code{post.distns}, and \code{jagged.data} to the returned \code{pft} for in-memory
